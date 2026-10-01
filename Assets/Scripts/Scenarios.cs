@@ -5,8 +5,6 @@ public class Scenarios : MonoBehaviour
 {
     [SerializeField] private int id;
     [SerializeField] private bool active = true;
-    [SerializeField] private List<string> texts = new List<string>();
-    [SerializeField] private int selectedText = 0;
     [SerializeField] private List<Npcs> npcs = new List<Npcs>();
     [SerializeField] private List<Interactable> interactable = new List<Interactable>();
     [SerializeField] private List<Exits> exits = new List<Exits>();
@@ -16,12 +14,6 @@ public class Scenarios : MonoBehaviour
     {
         if (this.id == 0)
             Debug.LogWarning("Scenario has unassigned id on GameObject " + gameObject.name);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     public int GetId()
@@ -36,41 +28,6 @@ public class Scenarios : MonoBehaviour
     public void SetActive(bool active)
     {
         this.active = active;
-    }
-    public int GetSelectedText()
-    {
-        return selectedText;
-    }
-    public void SetSelectedText(int index)
-    {
-        if (texts == null)
-        {
-            Debug.LogError("Texts array is null in Scenario with id " + this.id);
-            return;
-        }
-
-        if (index >= texts.Count || index < 0)
-        {
-            Debug.LogError("Index out of bounds in Scenario with id " + this.id);
-            return;
-        }
-
-        if (texts[index] == null)
-            Debug.LogError("Text is null in Scenario with id " + this.id);
-
-        this.selectedText = index;
-    }
-
-    public void PrintText()
-    {
-        if (texts[selectedText] != null)
-        {
-            Debug.Log("Scenario dice (" + id + "): " + texts[selectedText]);
-        }
-        else
-        {
-            Debug.LogWarning("Scenario with id " + this.id + " has no texts.");
-        }
     }
 
     public Npcs GetNpcById(int npcId)

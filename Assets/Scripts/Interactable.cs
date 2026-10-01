@@ -4,7 +4,7 @@ public class Interactable : MonoBehaviour
 {
     [SerializeField] private int id;
     [SerializeField] private bool active = true;
-    [SerializeField] private List<string> texts = new List<string>();
+    [SerializeField] protected List<string> texts = new List<string>();
     [SerializeField] private int selectedText = 0;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -12,12 +12,6 @@ public class Interactable : MonoBehaviour
     {
         if (this.id == 0)
             Debug.LogWarning("Interactable has unassigned id on GameObject " + gameObject.name);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public int GetId()
@@ -29,14 +23,17 @@ public class Interactable : MonoBehaviour
     {
         return active;
     }
+
     public void SetActive(bool active)
     {
         this.active = active;
     }
+
     public int GetSelectedText()
     {
         return selectedText;
     }
+
     public void SetSelectedText(int index)
     {
         if (texts == null)
@@ -57,15 +54,8 @@ public class Interactable : MonoBehaviour
         this.selectedText = index;
     }
 
-    public void PrintText()
+    public virtual void Interact()
     {
-        if (texts[selectedText] != null)
-        {
-            Debug.Log("Interactable dice (" + id + "): " + texts[selectedText]);
-        }
-        else
-        {
-            Debug.LogWarning("Interactable with id " + this.id + " has no texts.");
-        }
+        Debug.Log("Interactuando con objeto genérico ID: " + id);
     }
 }

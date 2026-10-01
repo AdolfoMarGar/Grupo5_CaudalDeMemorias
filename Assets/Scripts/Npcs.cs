@@ -2,72 +2,20 @@ using UnityEngine;
 using System.Collections.Generic;
 
 
-public class Npcs : MonoBehaviour
+public class Npcs : Interactable
 {
-    [SerializeField] private int id;
-    [SerializeField] private bool active = true;
-    [SerializeField] private List<string> texts = new List<string>();
-    [SerializeField] private int selectedText = 0;
+    public override void Interact()
+    {
+        base.Interact(); // Opcional: ejecuta primero lo que tuviera la base
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        if (this.id == 0)
-            Debug.LogWarning("Npcs has unassigned id on GameObject " + gameObject.name);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
-    public int GetId()
-    {
-        return id;
-    }
-
-    public bool IsActive()
-    {
-        return active;
-    }
-    public void SetActive(bool active)
-    {
-        this.active = active;
-    }
-    public int GetSelectedText()
-    {
-        return selectedText;
-    }
-    public void SetSelectedText(int index)
-    {
-        if (texts == null)
+        if (texts[GetSelectedText()] == null)
         {
-            Debug.LogError("Texts array is null in Npcs with id " + this.id);
+            Debug.LogError("Texto nulo en NPC con id " + GetId());
             return;
         }
 
-        if (index >= texts.Count || index < 0)
-        {
-            Debug.LogError("Index out of bounds in Npcs with id " + this.id);
-            return;
-        }
+        Debug.Log("Npc de id"+ GetId()+ " dice: " + texts[GetSelectedText()]);
 
-        if (texts[index] == null)
-            Debug.LogError("Text is null in Npcs with id " + this.id);
-
-        this.selectedText = index;
-    }
-
-    public void PrintText()
-    {
-        if (texts[selectedText] != null)
-        {
-            Debug.Log("NPC dice (" + id + "): " + texts[selectedText]);
-        }
-        else
-        {
-            Debug.LogWarning("Npcs with id " + this.id + " has no texts.");
-        }
+        // Aquí podrías abrir la interfaz gráfica (UI) de diálogos de tu juego.
     }
 }

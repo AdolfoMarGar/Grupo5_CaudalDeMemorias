@@ -694,7 +694,7 @@ GameObject:
   m_Component:
   - component: {fileID: 876999495}
   - component: {fileID: 876999494}
-  - component: {fileID: 876999493}
+  - component: {fileID: 876999496}
   m_Layer: 0
   m_Name: Interactable2
   m_TagString: Untagged
@@ -702,22 +702,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &876999493
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 876999492}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e12d4d992ed8e1149ab7d1c1bda38357, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  id: 2
-  active: 1
-  texts: []
-  selectedText: 0
 --- !u!212 &876999494
 SpriteRenderer:
   serializedVersion: 3
@@ -793,6 +777,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &876999496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 876999492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e0907c3409b4247b87aec9a258bda4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneObject
+  id: 2
+  active: 1
+  texts: []
+  selectedText: 0
 --- !u!1 &1387185978
 GameObject:
   m_ObjectHideFlags: 0
@@ -934,17 +934,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Scenarios
   id: 0
   active: 1
-  texts:
-  - "Por ahi no pill\xEDn"
-  - Ahora si puedes
-  selectedText: 0
   npcs:
   - {fileID: 0}
   - {fileID: 0}
   interactable:
-  - {fileID: 1883365188}
-  - {fileID: 1827192074}
-  - {fileID: 876999493}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   exits: []
 --- !u!212 &1472533589
 SpriteRenderer:
@@ -1031,7 +1027,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1827192076}
   - component: {fileID: 1827192075}
-  - component: {fileID: 1827192074}
+  - component: {fileID: 1827192077}
   m_Layer: 0
   m_Name: Interactable1
   m_TagString: Untagged
@@ -1039,22 +1035,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1827192074
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1827192073}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e12d4d992ed8e1149ab7d1c1bda38357, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  id: 1
-  active: 0
-  texts: []
-  selectedText: 0
 --- !u!212 &1827192075
 SpriteRenderer:
   serializedVersion: 3
@@ -1123,13 +1103,29 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1827192073}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: -5.62, y: 3.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1827192077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1827192073}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e0907c3409b4247b87aec9a258bda4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneObject
+  id: 1
+  active: 1
+  texts: []
+  selectedText: 0
 --- !u!1 &1883365187
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1136,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1883365190}
   - component: {fileID: 1883365189}
-  - component: {fileID: 1883365188}
+  - component: {fileID: 1883365191}
   m_Layer: 0
   m_Name: Interactable3
   m_TagString: Untagged
@@ -1148,22 +1144,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1883365188
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883365187}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e12d4d992ed8e1149ab7d1c1bda38357, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Interactable
-  id: 3
-  active: 1
-  texts: []
-  selectedText: 0
 --- !u!212 &1883365189
 SpriteRenderer:
   serializedVersion: 3
@@ -1239,6 +1219,22 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1883365191
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883365187}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 37e0907c3409b4247b87aec9a258bda4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SceneObject
+  id: 3
+  active: 1
+  texts: []
+  selectedText: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1246,9 +1242,9 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 619394802}
   - {fileID: 1472533590}
-  - {fileID: 1883365190}
   - {fileID: 1827192076}
   - {fileID: 876999495}
+  - {fileID: 1883365190}
   - {fileID: 362885776}
   - {fileID: 51676913}
   - {fileID: 122266120}
