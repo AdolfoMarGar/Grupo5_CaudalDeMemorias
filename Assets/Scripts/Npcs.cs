@@ -13,7 +13,7 @@ public class Npcs : MonoBehaviour
     void Start()
     {
         if (this.id == 0)
-            Debug.LogWarning("Npcs has unassigned id on GameObject " + this.id);
+            Debug.LogWarning("Npcs has unassigned id on GameObject " + gameObject.name);
     }
 
     // Update is called once per frame
@@ -63,7 +63,7 @@ public class Npcs : MonoBehaviour
     {
         if (texts[selectedText] != null)
         {
-            Debug.Log("Npcs with id " + this.id + " has texts: " + string.Join(", ", texts));
+            Debug.Log("NPC dice (" + id + "): " + texts[selectedText]);
         }
         else
         {

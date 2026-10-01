@@ -12,7 +12,7 @@ public class Exits : MonoBehaviour
     void Start()
     {
         if (this.id == 0)
-            Debug.LogWarning("Exits has unassigned id on GameObject " + this.id);
+            Debug.LogWarning("Exits has unassigned id on GameObject " + gameObject.name);
     }
 
     // Update is called once per frame
@@ -62,7 +62,7 @@ public class Exits : MonoBehaviour
     {
         if (texts[selectedText] != null)
         {
-            Debug.Log("Exits with id " + this.id + " has texts: " + string.Join(", ", texts));
+            Debug.Log("Exit dice (" + id + "): " + texts[selectedText]);
         }
         else
         {

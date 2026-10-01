@@ -11,7 +11,7 @@ public class Interactable : MonoBehaviour
     void Start()
     {
         if (this.id == 0)
-            Debug.LogWarning("Interactable has unassigned id on GameObject " + this.id);
+            Debug.LogWarning("Interactable has unassigned id on GameObject " + gameObject.name);
     }
 
     // Update is called once per frame
@@ -61,7 +61,7 @@ public class Interactable : MonoBehaviour
     {
         if (texts[selectedText] != null)
         {
-            Debug.Log("Interactable with id " + this.id + " has texts: " + string.Join(", ", texts));
+            Debug.Log("Interactable dice (" + id + "): " + texts[selectedText]);
         }
         else
         {
