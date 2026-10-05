@@ -1,17 +1,34 @@
-using UnityEngine;
+using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 public class Interactable : MonoBehaviour
 {
     [SerializeField] private int id;
     [SerializeField] private bool active = true;
     [SerializeField] protected List<string> texts = new List<string>();
     [SerializeField] private int selectedText = 0;
+    private Color defaultColor;
+
+    public event Action<Interactable> OnClicked;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         if (this.id == 0)
             Debug.LogWarning("Interactable has unassigned id on GameObject " + gameObject.name);
+        defaultColor = gameObject.GetComponent<SpriteRenderer>().color;
+
+        if (this.active == false)
+        {
+            // Alternativa estándar: SpriteRenderer
+            var sr = gameObject.GetComponent<SpriteRenderer>();
+            if (sr != null)
+                sr.color = Color.gray;
+            else
+                Debug.LogWarning("No SpriteManager ni SpriteRenderer en " + gameObject.name);
+            
+        }
     }
 
     public int GetId()
@@ -27,6 +44,16 @@ public class Interactable : MonoBehaviour
     public void SetActive(bool active)
     {
         this.active = active;
+        var sr = gameObject.GetComponent<SpriteRenderer>();
+        if (!active)
+        {
+            if (sr != null)
+                sr.color = Color.gray;
+        }
+        else
+        {
+            sr.color = defaultColor;
+        }
     }
 
     public int GetSelectedText()
@@ -56,6 +83,15 @@ public class Interactable : MonoBehaviour
 
     public virtual void Interact()
     {
-        Debug.Log("Interactuando con objeto genérico ID: " + id);
+        //Debug.Log("Interactuando con objeto genérico ID : " + id);
+        OnClicked?.Invoke(this);
+    }
+
+    private void OnMouseDown()
+    {
+        if (active)
+        {
+            Interact();
+        }
     }
 }

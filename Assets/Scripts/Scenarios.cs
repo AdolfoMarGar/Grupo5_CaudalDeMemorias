@@ -6,7 +6,7 @@ public class Scenarios : MonoBehaviour
     [SerializeField] private int id;
     [SerializeField] private bool active = true;
     [SerializeField] private List<Npcs> npcs = new List<Npcs>();
-    [SerializeField] private List<Interactable> interactable = new List<Interactable>();
+    [SerializeField] private List<SceneObject> sceneObjects = new List<SceneObject>();
     [SerializeField] private List<Exits> exits = new List<Exits>();
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -40,14 +40,14 @@ public class Scenarios : MonoBehaviour
         Debug.LogWarning("Npc with id " + npcId + " not found in Scenario with id " + this.id);
         return null;
     }
-    public Interactable GetInteractableById(int interactableId)
+    public SceneObject GetSceneObjectById(int sceneObjectId)
     {
-        foreach (var interact in interactable)
+        foreach (var sceneObject in sceneObjects)
         {
-            if (interact.GetId() == interactableId)
-                return interact;
+            if (sceneObject.GetId() == sceneObjectId)
+                return sceneObject;
         }
-        Debug.LogWarning("Interactable with id " + interactableId + " not found in Scenario with id " + this.id);
+        Debug.LogWarning("SceneObject with id " + sceneObjectId  + " not found in Scenario with id " + this.id);
         return null;
     }
 
@@ -60,5 +60,17 @@ public class Scenarios : MonoBehaviour
         }
         Debug.LogWarning("Scenario with id " + exitId + " not found in Scenario with id " + this.id);
         return null;
+    }
+    public List<Npcs> GetNpcs()
+    {
+        return npcs;
+    }
+    public List<SceneObject> GetSceneObjects()
+    {
+        return sceneObjects;
+    }
+    public List<Exits> GetExits()
+    {
+        return exits;
     }
 }
