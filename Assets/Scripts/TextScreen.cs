@@ -3,10 +3,12 @@ using TMPro;
 using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class TextScreen : MonoBehaviour
 {
     public TextMeshProUGUI textoUI;
+    [SerializeField] private Image imageText;
 
     void Start()
     {
@@ -14,6 +16,8 @@ public class TextScreen : MonoBehaviour
         {
             Debug.LogError("¡Falta asignar el componente TextMeshProUGUI en el inspector!", this);
         }
+        imageText.enabled = false;
+        textoUI.enabled = false;
     }
 
     public void MostrarDialogos(List<string> texts, int selectedText, int endText)
@@ -26,7 +30,8 @@ public class TextScreen : MonoBehaviour
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
         textoUI.enabled = true;
-        
+        imageText.enabled = true;
+
         // Necesario porque sino se salta el primer texto.
         while (Mouse.current != null && Mouse.current.leftButton.isPressed)
         {
@@ -56,5 +61,7 @@ public class TextScreen : MonoBehaviour
         }
 
         textoUI.enabled = false;
+        imageText.enabled = false;
+
     }
 }
