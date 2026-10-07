@@ -8,10 +8,18 @@ public class Scene1 : MonoBehaviour
     private List<Npcs> npcs = new List<Npcs>();
     private List<SceneObject> sceneObjects = new List<SceneObject>();
     private List<Exits> exits = new List<Exits>();
+    private TextScreen textScreen;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        textScreen = FindAnyObjectByType<TextScreen>();
+        if (textScreen == null)
+        {
+            Debug.LogError("¡No se encontró ningún TextScreen en la escena!");
+        }
+
         if (scenarios == null || scenarios.Count == 0)
         {
             Debug.LogError("No hay escenarios asignados en Scene1.");
@@ -82,6 +90,7 @@ public class Scene1 : MonoBehaviour
         if(objetoClickeado == sceneObjects[1])
         {
             Debug.Log("ACTIVANDO salida 1");
+            textScreen.MostrarDialogos(sceneObjects[1].GetTexts(), sceneObjects[1].GetSelectedText(), sceneObjects[1].GetTexts().Count - 1);
             exits[0].SetActive(true);
         }
 

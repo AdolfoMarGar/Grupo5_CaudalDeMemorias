@@ -80,6 +80,10 @@ public class Interactable : MonoBehaviour
 
         this.selectedText = index;
     }
+    public List<string> GetTexts()
+    {
+        return texts;
+    }
 
     public virtual void Interact()
     {
