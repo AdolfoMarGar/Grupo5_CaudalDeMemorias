@@ -2,7 +2,6 @@ using UnityEngine;
 using TMPro;
 using System.Collections.Generic;
 using System.Collections;
-// 👇 Asegúrate de incluir este using para el Input System moderno
 using UnityEngine.InputSystem;
 
 public class TextScreen : MonoBehaviour
@@ -26,8 +25,6 @@ public class TextScreen : MonoBehaviour
 
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
-        Debug.Log("Inicio corrutina text inicio: " + selectedText);//Aqui dice selectedText 0
-
         textoUI.enabled = true;
         
         // Necesario porque sino se salta el primer texto.
@@ -39,7 +36,6 @@ public class TextScreen : MonoBehaviour
 
         for (int i = selectedText; i <= endText; i++)
         {
-            Debug.Log("Mostrando texto: " + i);//muestra el 0 pero instantaneamente el 1
             textoUI.text = texts[i];
 
             bool clickDetectado = false;
