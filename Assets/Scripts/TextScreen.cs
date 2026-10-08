@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using System;
 
 public class TextScreen : MonoBehaviour
 {
     public TextMeshProUGUI textoUI;
     [SerializeField] private Image imageText;
+    public event Action OnDialogosTerminados;
 
     void Start()
     {
@@ -63,5 +65,6 @@ public class TextScreen : MonoBehaviour
         textoUI.enabled = false;
         imageText.enabled = false;
 
+        OnDialogosTerminados?.Invoke();
     }
 }

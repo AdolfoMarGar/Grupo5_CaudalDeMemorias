@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 public class Interactable : MonoBehaviour
 {
@@ -13,21 +12,20 @@ public class Interactable : MonoBehaviour
     public event Action<Interactable> OnClicked;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    void Awake() // Cambiado de Start a Awake
     {
         if (this.id == 0)
             Debug.LogWarning("Interactable has unassigned id on GameObject " + gameObject.name);
-        defaultColor = gameObject.GetComponent<SpriteRenderer>().color;
 
-        if (this.active == false)
+        var sr = gameObject.GetComponent<SpriteRenderer>();
+        if (sr != null)
+            defaultColor = sr.color;
+        else
+            Debug.LogWarning("No SpriteRenderer en " + gameObject.name);
+
+        if (this.active == false && sr != null)
         {
-            // Alternativa estándar: SpriteRenderer
-            var sr = gameObject.GetComponent<SpriteRenderer>();
-            if (sr != null)
-                sr.color = Color.gray;
-            else
-                Debug.LogWarning("No SpriteManager ni SpriteRenderer en " + gameObject.name);
-            
+            sr.color = Color.gray;
         }
     }
 
@@ -93,9 +91,15 @@ public class Interactable : MonoBehaviour
 
     private void OnMouseDown()
     {
+        Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
+
         if (active)
         {
             Interact();
+        }
+        else
+        {
+            Debug.Log("El objeto está inactivo (active = false), por eso no interactúa.");
         }
     }
 }
