@@ -6,9 +6,13 @@ public class TreeMinigame : MonoBehaviour
     private int treeCount;
     private int dirtCount;
     private bool glyphsActivated = false;
+    public bool ended = false;
     [SerializeField] private List<TreeBranch> treeBranch = new List<TreeBranch>();
     [SerializeField] private List<DirtSpots> dirtSpots = new List<DirtSpots>();
     [SerializeField] private List<Glyphs> glyphs = new List<Glyphs>();
+    int glyphPosition = 0;
+
+    private List<int> idsAleatorios = new List<int>();
     //[SerializeField] protected TextScreen textScreen;
     //[SerializeField] protected Canvas canvas;
 
@@ -99,7 +103,16 @@ public class TreeMinigame : MonoBehaviour
         else if (objetoClickeado is Glyphs)
         {
             Debug.Log("Se hizo clic en un Glyphs: " + objetoClickeado.name);
-            // Lógica para manejar el clic en un Glyphs
+            
+            if(objetoClickeado.GetId() == idsAleatorios[glyphPosition])
+            {
+                glyphPosition++;
+            }
+            else
+            {
+                Debug.Log("Glyph incorrecto. Reiniciando secuencia.");
+                glyphPosition = 0;
+            }
         }
         Debug.Log("Contadores actuales - TreeCount: " + treeCount + ", DirtCount: " + dirtCount);
 
@@ -155,10 +168,41 @@ public class TreeMinigame : MonoBehaviour
                 if (glyph != null)
                 {
                     glyph.SetActive(true);
+                    idsAleatorios = GenerarIdsAleatorios(glyphs.Count);
                 }
             }
             glyphsActivated = true;
         }
+        if(glyphsActivated && glyphPosition >= glyphs.Count && !ended)
+        {
+            Debug.Log("Secuencia de Glyphs completada. Minijuego del árbol finalizado.");
+            // Aquí puedes agregar la lógica para finalizar el minijuego, como mostrar un mensaje o activar algún evento.
+            ended = true;
+        }
+    }
+
+    private List<int> GenerarIdsAleatorios(int cantidad)
+    {
+        List<int> listaIds = new List<int>();
+
+        for (int i = 1; i <= cantidad; i++)
+        {
+            listaIds.Add(i);
+        }
+
+        // 2. Mezclar la lista (Algoritmo Fisher-Yates)
+        for (int i = 0; i < listaIds.Count; i++)
+        {
+            int indiceAleatorio = Random.Range(i, listaIds.Count);
+
+            // Intercambiar los elementos de posición
+            int temp = listaIds[i];
+
+            listaIds[i] = listaIds[indiceAleatorio];
+            listaIds[indiceAleatorio] = temp;
+        }
+        Debug.Log("IDs aleatorios generados: " + string.Join(", ", listaIds));
+        return listaIds;
     }
 
 }
