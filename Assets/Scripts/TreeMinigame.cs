@@ -107,11 +107,19 @@ public class TreeMinigame : MonoBehaviour
             if(objetoClickeado.GetId() == idsAleatorios[glyphPosition])
             {
                 glyphPosition++;
+                glyphs[objetoClickeado.GetId() - 1].GlowGlyph();
             }
             else
             {
                 Debug.Log("Glyph incorrecto. Reiniciando secuencia.");
                 glyphPosition = 0;
+                foreach (var glyph in glyphs)
+                {
+                    if (glyph.IsGlowing() == true)
+                    {
+                        glyph.GlowGlyph(); 
+                    }
+                }
             }
         }
         Debug.Log("Contadores actuales - TreeCount: " + treeCount + ", DirtCount: " + dirtCount);
