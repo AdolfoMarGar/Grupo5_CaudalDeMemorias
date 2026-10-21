@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -176,9 +177,11 @@ public class TreeMinigame : MonoBehaviour
                 if (glyph != null)
                 {
                     glyph.SetActive(true);
-                    idsAleatorios = GenerarIdsAleatorios(glyphs.Count);
+                    glyph.EnableBoxCollider2D(true);
                 }
             }
+            GenerarIdsAleatorios(glyphs.Count);
+            StartCoroutine(RutinaAlternarEstado());
             glyphsActivated = true;
         }
         if(glyphsActivated && glyphPosition >= glyphs.Count && !ended)
@@ -189,7 +192,32 @@ public class TreeMinigame : MonoBehaviour
         }
     }
 
-    private List<int> GenerarIdsAleatorios(int cantidad)
+    private IEnumerator RutinaAlternarEstado()
+    {
+        int cont =0;
+        for(int i = 0; i < glyphs.Count; i++)
+        {
+            // Espera exactamente los segundos indicados
+            glyphs[cont].GlowGlyph();
+            if(cont>0)
+                glyphs[cont - 1].GlowGlyph();
+            yield return new WaitForSeconds(0.5f);
+            cont++;
+
+            
+        }
+        glyphs[glyphs.Count-1].GlowGlyph();
+        foreach (var glyph in glyphs)
+        {
+            if (glyph != null)
+            {
+                glyph.SetActive(true);
+                glyph.EnableBoxCollider2D(true);
+            }
+        }
+    }
+
+    private void GenerarIdsAleatorios(int cantidad)
     {
         List<int> listaIds = new List<int>();
 
@@ -210,7 +238,7 @@ public class TreeMinigame : MonoBehaviour
             listaIds[indiceAleatorio] = temp;
         }
         Debug.Log("IDs aleatorios generados: " + string.Join(", ", listaIds));
-        return listaIds;
+        idsAleatorios = listaIds;
     }
 
 }

@@ -11,7 +11,7 @@ public class TreeBranch : Interactable
         var sr = GetComponent<SpriteRenderer>();
         if (sr != null) sr.enabled = false;
 
-        var col = GetComponent<Collider2D>();
+        var col = GetComponent<BoxCollider2D>();
         if (col != null) col.enabled = false;
     }
 }

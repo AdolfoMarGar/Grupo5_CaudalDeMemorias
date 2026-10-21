@@ -33,4 +33,14 @@ public class Glyphs : Interactable
     {
         return glowing;
     }
+    public bool EnableBoxCollider2D(bool enable)
+    {
+        var col = GetComponent<BoxCollider2D>();
+        if (col != null)
+        {
+            col.enabled = enable;
+            return true; // Retorna true si se pudo habilitar/deshabilitar el collider
+        }
+        return false; // Retorna false si no se encontró el collider
+    }
 }
