@@ -7,7 +7,7 @@ public class Interactable : MonoBehaviour
     [SerializeField] private bool active = true;
     [SerializeField] protected List<string> texts = new List<string>();
     [SerializeField] private int selectedText = 0;
-    private Color defaultColor;
+    protected Color defaultColor;
 
     public event Action<Interactable> OnClicked;
 
