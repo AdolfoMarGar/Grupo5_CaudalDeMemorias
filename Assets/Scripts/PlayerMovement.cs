@@ -6,34 +6,26 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 5f;
 
     [Header("Efecto Profundidad (Fake 3D)")]
-    [SerializeField] private Transform topPosition;
-    [SerializeField] private Transform bottomPosition;
     //La posicion mas baja de la camara
-    private float minY = 0;
+    public float minY = -4f; 
     //La posicion mas alta de la camara
-    private float maxY = 0;  
+    public float maxY = 4f;  
     
     public float maxScale = 1.5f; // Tamaño del cubo al estar pegado a la pantalla
     public float minScale = 0.5f; // Tamaño del cubo al estar al fondo
 
-    private void Start()
-    {
-        // Inicializamos minY y maxY con las posiciones de los transform
-        if (topPosition != null && bottomPosition != null)
-        {
-            minY = bottomPosition.position.y;
-            maxY = topPosition.position.y;
-        }
-        else
-        {
-            Debug.LogWarning("TopPosition o BottomPosition no están asignados en PlayerMovement.");
-        }
-    }
     void Update()
     {
         // GetAxis devuelve un valor entre -1 y 1, ayuda a que el movimiento sea mas fluido con el mando
         //horizontal y vertical es el nombre de los axis de unity, compatibles pa mando y teclado
-        float moveX = Input.GetAxis("Horizontal");
+        float moveX = Input.GetAxis("Horizontal");//da error
+        /*
+         * InvalidOperationException: You are trying to read Input using the UnityEngine.Input class, but you have switched active Input handling to Input System package in Player Settings.
+UnityEngine.Internal.InputUnsafeUtility.GetAxis (System.String axisName) (at <1fbf520707494e6fb187ca6d516a21b5>:0)
+UnityEngine.Input.GetAxis (System.String axisName) (at <1fbf520707494e6fb187ca6d516a21b5>:0)
+PlayerMovement.Update () (at Assets/Scripts/PlayerMovement.cs:21)
+
+         */
         float moveY = Input.GetAxis("Vertical");
 
         // Esto aplica el movimiento

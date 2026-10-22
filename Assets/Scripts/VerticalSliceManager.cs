@@ -17,7 +17,7 @@ public class VerticalSliceManager : GameplayManager
             Debug.Log("Desactivando " + sceneObj.name);
             sceneObj.gameObject.SetActive(false);
         }
-        exits[0].gameObject.SetActive(false);
+        // exits[0].gameObject.SetActive(false); // Mantener activo para poder hacer clic y viajar a GrandpaSide2D
         señorino.enabled = false;
         señorino2.enabled = false;
         if (canvas != null) 
