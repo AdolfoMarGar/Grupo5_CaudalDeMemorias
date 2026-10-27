@@ -8,12 +8,17 @@ public class Interactable : MonoBehaviour
     [SerializeField] protected List<string> texts = new List<string>();
     [SerializeField] private int selectedText = 0;
     protected Color defaultColor;
+    Collider2D col2D;
 
     public event Action<Interactable> OnClicked;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake() // Cambiado de Start a Awake
     {
+        
+        col2D = GetComponent<Collider2D>();
+        if (col2D == null)
+            Debug.LogWarning("No Collider2D en " + gameObject.name);
         if (this.id == 0)
             Debug.LogWarning("Interactable has unassigned id on GameObject " + gameObject.name);
 
@@ -26,6 +31,10 @@ public class Interactable : MonoBehaviour
         if (this.active == false && sr != null)
         {
             sr.color = Color.gray;
+        }
+        if (active == false)
+        {
+            col2D.enabled = false;
         }
     }
 
@@ -47,10 +56,12 @@ public class Interactable : MonoBehaviour
         {
             if (sr != null)
                 sr.color = Color.gray;
+            col2D.enabled = false; 
         }
         else
         {
             sr.color = defaultColor;
+            col2D.enabled = true;
         }
     }
 
