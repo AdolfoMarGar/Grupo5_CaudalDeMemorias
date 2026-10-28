@@ -12,6 +12,7 @@ public class DemoManager : GameplayManager
     protected override void Start()
     {
         base.Start();
+        treeMinigame.gameObject.SetActive(false);
         Debug.Log("Iniciando DemoManager");
 
         //foreach (var sceneObj in sceneObjects)
@@ -44,8 +45,17 @@ public class DemoManager : GameplayManager
         // Mostramos texto de cualquier objeto de la escena
         else if (objetoClickeado is SceneObject && sceneObjects[objetoClickeado.GetId() - 1].isPlayerColliding())
         {
-            interactuable = false;
-            StartCoroutine(textObjectScene(objetoClickeado));
+            if (objetoClickeado.GetId() == 3)
+            {
+                interactuable = false;
+                StartCoroutine(EjecutarMinijuegoArbol(objetoClickeado));
+            }
+            else
+            {
+                interactuable = false;
+                StartCoroutine(textObjectScene(objetoClickeado));
+            }
+            
         }
         else if (objetoClickeado is Exits  && exits[objetoClickeado.GetId() - 1].isPlayerColliding())
         {
@@ -72,6 +82,24 @@ public class DemoManager : GameplayManager
            
         }
 
+    }
+    private IEnumerator EjecutarMinijuegoArbol(Interactable objetoClickeado)
+    {
+        treeMinigame.gameObject.SetActive(true);
+        cameras[3].Priority.Value = 2;
+
+
+        yield return new WaitUntil(() => treeMinigame.ended);
+
+
+        cameras[3].Priority.Value = 0;
+
+        int index = objetoClickeado.GetId() - 1;
+        sceneObjects[index].gameObject.SetActive(false);
+        treeMinigame.gameObject.SetActive(false);
+
+        // Reactivar la interacción general
+        interactuable = true;
     }
     private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
     {

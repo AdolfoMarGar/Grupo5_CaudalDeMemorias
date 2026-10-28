@@ -19,14 +19,42 @@ public class TreeMinigame : MonoBehaviour
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
+        RegistrarEventosInteractables();
+    }
+    private void OnEnable()
+    {
+        ReiniciarMinijuego();
+    }
+    public void ReiniciarMinijuego()
+    {
+        ended = false;
+        glyphsActivated = false;
+        glyphPosition = 0;
+
         treeCount = treeBranch.Count;
         dirtCount = dirtSpots.Count;
 
-        RegistrarEventosInteractables();
-    }
+        // Reactivamos componentes si el minijuego fue jugado antes
+        foreach (var branch in treeBranch)
+        {
+            if (branch != null) branch.gameObject.SetActive(true);
+        }
 
+        foreach (var dirt in dirtSpots)
+        {
+            if (dirt != null) dirt.gameObject.SetActive(true);
+        }
+
+        foreach (var glyph in glyphs)
+        {
+            if (glyph != null)
+            {
+                glyph.SetActive(false); // Ocultar hasta completar ramas y tierra
+            }
+        }
+    }
     private void RegistrarEventosInteractables()
     {
 
@@ -54,19 +82,19 @@ public class TreeMinigame : MonoBehaviour
 
             // 2. Registrar NPCs
             // Dentro de RegistrarEventosInteractables, en el bucle de NPCs:
-            foreach (var treeBranch in treeBranch)
+            foreach (var branch in treeBranch)
             {
-                if (treeBranch != null)
+                if (branch != null)
                 {
-                    Interactable interactableComponent = treeBranch.GetComponent<Interactable>();
+                    Interactable interactableComponent = branch.GetComponent<Interactable>();
                     if (interactableComponent != null)
                     {
-                        //Debug.Log("Suscrito correctamente al NPC: " + treeBranch.name); 
+                        //Debug.Log("Suscrito correctamente al NPC: " + branch.name); 
                         interactableComponent.OnClicked += ManejarObjetoClickeado;
                     }
                     else
                     {
-                        Debug.LogError("El NPC " + treeBranch.name + " no tiene componente Interactable!", treeBranch);
+                        Debug.LogError("El NPC " + branch.name + " no tiene componente Interactable!", branch);
                     }
                 }
             }
