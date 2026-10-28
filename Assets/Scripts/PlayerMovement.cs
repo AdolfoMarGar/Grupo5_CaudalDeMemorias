@@ -49,4 +49,9 @@ public class PlayerMovement : MonoBehaviour
         // Y esto aplica la escala
         transform.localScale = new Vector3(currentScale, currentScale, 1f);
     }
+    public void SetLimitsPosition(Transform top, Transform bottom)
+    {
+        minY = bottom.position.y;
+        maxY = top.position.y;
+    }
 }

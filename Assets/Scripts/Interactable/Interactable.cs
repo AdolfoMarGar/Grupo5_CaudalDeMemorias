@@ -8,7 +8,7 @@ public class Interactable : MonoBehaviour
     [SerializeField] protected List<string> texts = new List<string>();
     [SerializeField] private int selectedText = 0;
     protected Color defaultColor;
-    Collider2D col2D;
+    private Collider2D col2D;
 
     public event Action<Interactable> OnClicked;
 
@@ -102,7 +102,7 @@ public class Interactable : MonoBehaviour
 
     private void OnMouseDown()
     {
-        Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
+        //Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
 
         if (active)
         {
@@ -113,4 +113,20 @@ public class Interactable : MonoBehaviour
             Debug.Log("El objeto está inactivo (active = false), por eso no interactúa.");
         }
     }
+
+    public bool isPlayerColliding()
+    {
+        if (col2D == null)
+        {
+            Debug.LogWarning("Collider2D no asignado en " + gameObject.name);
+            return false;
+        }
+
+        // Comprueba si la forma de col2D está en contacto físico con la capa "Player"
+        bool isColliding = col2D.IsTouchingLayers(LayerMask.GetMask("Player"));
+
+        Debug.Log("Contacto con player: " + isColliding);
+        return isColliding;
+    }
+
 }

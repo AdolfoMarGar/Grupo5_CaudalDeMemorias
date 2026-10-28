@@ -8,8 +8,9 @@ public class VerticalSliceManager : GameplayManager
     [SerializeField] private Image señorino;
     [SerializeField] private Image señorino2;
     private int goalMision = 0;
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         Debug.Log("Iniciando VerticalSliceManager");
 
         foreach (var sceneObj in sceneObjects)

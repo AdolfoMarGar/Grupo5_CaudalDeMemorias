@@ -28,43 +28,59 @@ public class TextScreen : MonoBehaviour
         Debug.Log("Mostrando textos desde el índice " + selectedText + " hasta " + endText);
         StartCoroutine(RutinaMostrarTextos(texts, selectedText, endText));
     }
-
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
+        yield return null;
         textoUI.enabled = true;
         imageText.enabled = true;
 
-        // Necesario porque sino se salta el primer texto.
-        while (Mouse.current != null && Mouse.current.leftButton.isPressed)
-        {
-            yield return null;
-        }
-
+        yield return EsperarAQueSuelteClick();
 
         for (int i = selectedText; i <= endText; i++)
         {
             textoUI.text = texts[i];
 
-            bool clickDetectado = false;
-
-            while (!clickDetectado)
-            {
-                bool mouseClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
-                bool touchClick = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
-
-                if (mouseClick || touchClick)
-                {
-                    clickDetectado = true;
-                }
-
-                yield return null;
-            }
             yield return null;
-        }
 
+            yield return EsperarAQuePresioneClick();
+
+            yield return EsperarAQueSuelteClick();
+        }
+        textoUI.text = "";
         textoUI.enabled = false;
         imageText.enabled = false;
 
         OnDialogosTerminados?.Invoke();
+    }
+
+
+    private IEnumerator EsperarAQuePresioneClick()
+    {
+        while (!SeHizoClick())
+        {
+            yield return null;
+        }
+    }
+
+    private IEnumerator EsperarAQueSuelteClick()
+    {
+        while (SeMantienePresionado())
+        {
+            yield return null;
+        }
+    }
+
+    private bool SeHizoClick()
+    {
+        bool mouseClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
+        bool touchClick = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
+        return mouseClick || touchClick;
+    }
+
+    private bool SeMantienePresionado()
+    {
+        bool mouseHold = Mouse.current != null && Mouse.current.leftButton.isPressed;
+        bool touchHold = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed;
+        return mouseHold || touchHold;
     }
 }

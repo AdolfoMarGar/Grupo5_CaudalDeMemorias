@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Player
   - 
   - 
   - 
@@ -49,6 +49,18 @@ TagManager:
     locked: 0
   - name: Middleground2
     uniqueID: 1824846531
+    locked: 0
+  - name: Player
+    uniqueID: 1306923307
+    locked: 0
+  - name: Middleground3
+    uniqueID: 1006254127
+    locked: 0
+  - name: Middleground4
+    uniqueID: 2488548651
+    locked: 0
+  - name: Frontground
+    uniqueID: 3002213205
     locked: 0
   m_RenderingLayers:
   - Default
