@@ -8,6 +8,7 @@ public class DemoManager : GameplayManager
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private bool interactuable = true;
+    [SerializeField] private TreeMinigame treeMinigame;
     protected override void Start()
     {
         base.Start();
@@ -32,6 +33,7 @@ public class DemoManager : GameplayManager
         if(!interactuable) return;
         Debug.Log("Manejando objeto clickeado: " + objetoClickeado.name);
 
+        //Mostrar texto pantalla npc1
         Debug.Log("Objeto clickeado: " + objetoClickeado.name);
         if (objetoClickeado == npcs[0] && npcs[0].isPlayerColliding())
         {
@@ -39,28 +41,56 @@ public class DemoManager : GameplayManager
             StartCoroutine(ActivarNpcPuente(objetoClickeado));
         }
 
-        // Comparamos el componente Interactable del SceneObject[1]
+        // Mostramos texto de cualquier objeto de la escena
         else if (objetoClickeado is SceneObject && sceneObjects[objetoClickeado.GetId() - 1].isPlayerColliding())
         {
             interactuable = false;
             StartCoroutine(textObjectScene(objetoClickeado));
         }
-        else if (objetoClickeado == exits[0] && exits[0].isPlayerColliding())
+        else if (objetoClickeado is Exits  && exits[objetoClickeado.GetId() - 1].isPlayerColliding())
         {
-            playerMovementScript.SetLimitsPosition(topPositions[1], bottomPositions[1]);
-            this.gameObject.transform.position = exits[1].transform.position;
-            cameras[0].Priority.Value -= 1;
-            cameras[1].Priority.Value += 1;
+            Debug.Log("Objeto clickeado: " + objetoClickeado.name + " es una salida y el jugador está colisionando con ella.");
+
+            // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
+            if (objetoClickeado.GetId() == 1)
+            {
+                InteractionExit(1, 2, 1, 2);
+            }
+            else if(objetoClickeado.GetId() == 2)
+            {
+                InteractionExit(2, 1, 2, 1);
+            }
+            else if (objetoClickeado.GetId() == 3)
+            {
+                InteractionExit(3, 4, 2, 3);
+            }
+            else if (objetoClickeado.GetId() == 4)
+            {
+                InteractionExit(4, 3, 3, 2);
+            }
+            
            
         }
-        else if (objetoClickeado == exits[1] && exits[1].isPlayerColliding())
-        {
-            playerMovementScript.SetLimitsPosition(topPositions[0], bottomPositions[0]);
-            this.gameObject.transform.position = exits[0].transform.position;
-            cameras[1].Priority.Value -= 1;
-            cameras[0].Priority.Value += 1;
-            
-        }
+
+    }
+    private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
+    {
+        var camaraDestino = cameras[idCamaraTo - 1];
+        Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
+        this.gameObject.transform.position = nuevaPosicion;
+
+        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
+
+        camaraDestino.transform.position = new Vector3(
+            nuevaPosicion.x,
+            nuevaPosicion.y,
+            camaraDestino.transform.position.z
+        );
+        camaraDestino.PreviousStateIsValid = false;
+
+        cameras[idCamara-1].Priority.Value -= 1;
+        cameras[idCamaraTo-1].Priority.Value += 1;
+
     }
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {

@@ -102,7 +102,7 @@ public class Interactable : MonoBehaviour
 
     private void OnMouseDown()
     {
-        //Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
+        Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
 
         if (active)
         {

@@ -62,7 +62,7 @@ public class GameplayManager : MonoBehaviour
     private void RegistrarEventosInteractables()
     {
         Debug.Log("Registrando eventos de interactuables para todos los escenarios.");
-        if (scenarios != null)
+        if (scenarios == null || scenarios.Count == 0) return;
         {
             Debug.Log("Escenarios disponibles: " + scenarios.Count);
             foreach (var scenario in scenarios)
@@ -81,7 +81,6 @@ public class GameplayManager : MonoBehaviour
                 }
             }
              
-            Debug.Log("La escena Tiene " + scenarios.Count + " escenarios, "+ npcs.Count + " NPCs, " + sceneObjects.Count + " SceneObjects y " + exits.Count + " Exits.");
            
             // 1. Registrar SceneObjects
             foreach (var sceneObj in sceneObjects)
@@ -89,10 +88,9 @@ public class GameplayManager : MonoBehaviour
                 if (sceneObj != null)
                 {
                     Interactable interactableComponent = sceneObj.GetComponent<Interactable>();
-                    if (interactableComponent != null)
-                    {
-                        interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    }
+                    Debug.Log("Suscrito correctamente al SceneObject: " + sceneObj.name);
+                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    
                 }
             }
 
@@ -115,15 +113,16 @@ public class GameplayManager : MonoBehaviour
                 if (exit != null)
                 {
                     Interactable interactableComponent = exit.GetComponent<Interactable>();
-                    if (interactableComponent != null)
-                    {
-                        interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    }
+                    Debug.Log("Suscrito correctamente al Exit: " + exit.name);
+                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    
                 }
                 
             }
+            Debug.Log("La escenas Tienen " + scenarios.Count + " escenarios, " + npcs.Count + " NPCs, " + sceneObjects.Count + " SceneObjects y " + exits.Count + " Exits. Total elementos: " + (scenarios.Count + npcs.Count + sceneObjects.Count + exits.Count));
+            //Debug.Log("total elementos registrados a eventos: "+ interactableComponent.OnClicked.GetInvocationList().Length);
         }
-        
+
     }
 
     public virtual void ManejarObjetoClickeado(Interactable objetoClickeado)
