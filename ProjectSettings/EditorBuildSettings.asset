@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MainMenu.unity
+    guid: 5a6b8f9b14b58db4f870c038abb95053
+  - enabled: 1
+    path: Assets/Scenes/Demo.unity
+    guid: 0ff6aa13343a75a4bb69f7b83be52992
+  - enabled: 1
     path: Assets/Scenes/VerticalSlice.unity
     guid: cbcedd0a7e95a2941a6d4724afe9ec3a
   - enabled: 1
@@ -14,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/BarCardMinigame.unity
     guid: 75e1489938366874583ab84dd450f30b
+  - enabled: 1
+    path: Assets/Scenes/MinijuegoArbol.unity
+    guid: 30cc14ed2832080429e15104810f4c35
   - enabled: 1
     path: Assets/Scenes/AdolfoTextScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02

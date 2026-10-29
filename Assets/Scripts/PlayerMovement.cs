@@ -16,8 +16,18 @@ public class PlayerMovement : MonoBehaviour
     public float maxScale = 1.5f; // Tamaño del cubo al estar pegado a la pantalla
     public float minScale = 0.5f; // Tamaño del cubo al estar al fondo
 
+    [Header("Animación")]
+    [SerializeField] private Animator animator;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [Tooltip("Gira automáticamente el sprite en X según la dirección horizontal del movimiento")]
+    public bool autoFlipX = true;
+
     private void Start()
     {
+        // Buscar automáticamente los componentes visuales en hijos si no están asignados
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (spriteRenderer == null) spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+
         // Inicializamos minY y maxY con las posiciones de los transform
         if (topPosition != null && bottomPosition != null)
         {
@@ -39,6 +49,19 @@ public class PlayerMovement : MonoBehaviour
         Vector3 movement = new Vector3(moveX, moveY, 0f);
         transform.position += movement * speed * Time.deltaTime;
 
+        // Actualizar animación de movimiento
+        bool isMoving = (Mathf.Abs(moveX) > 0.05f || Mathf.Abs(moveY) > 0.05f);
+        if (animator != null)
+        {
+            animator.SetBool("isMoving", isMoving);
+        }
+
+        // Voltear horizontalmente según la dirección
+        if (autoFlipX && spriteRenderer != null)
+        {
+            if (moveX < -0.05f) spriteRenderer.flipX = true;
+            else if (moveX > 0.05f) spriteRenderer.flipX = false;
+        }
 
         // InverseLerp da un porcentaje de 0 a 1 depende de donde esta el jugador entre minY y maxY
         float depthPercent = Mathf.InverseLerp(minY, maxY, transform.position.y);
@@ -48,5 +71,10 @@ public class PlayerMovement : MonoBehaviour
 
         // Y esto aplica la escala
         transform.localScale = new Vector3(currentScale, currentScale, 1f);
+    }
+    public void SetLimitsPosition(Transform top, Transform bottom)
+    {
+        minY = bottom.position.y;
+        maxY = top.position.y;
     }
 }
