@@ -52,16 +52,26 @@ public class Interactable : MonoBehaviour
     {
         this.active = active;
         var sr = gameObject.GetComponent<SpriteRenderer>();
+        if(sr == null)
+        {
+            sr= gameObject.GetComponentInChildren<SpriteRenderer>();
+        }
+
         if (!active)
         {
             if (sr != null)
-                sr.color = Color.gray;
-            col2D.enabled = false; 
+                sr.enabled = false;
+
+            if (col2D != null)
+                col2D.enabled = false;
         }
         else
         {
-            sr.color = defaultColor;
-            col2D.enabled = true;
+            if (sr != null)
+                sr.enabled = true;
+
+            if (col2D != null)
+                col2D.enabled = true;
         }
     }
 

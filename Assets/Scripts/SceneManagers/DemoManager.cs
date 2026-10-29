@@ -3,24 +3,21 @@ using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class DemoManager : GameplayManager
 {
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     private bool interactuable = true;
     [SerializeField] private TreeMinigame treeMinigame;
+    [SerializeField] private BarCardGameController cardScript;
+    [SerializeField] private Canvas canvaCard;
     protected override void Start()
     {
+        Debug.Log("Iniciando DemoManager");
         base.Start();
         treeMinigame.gameObject.SetActive(false);
-        Debug.Log("Iniciando DemoManager");
 
-        //foreach (var sceneObj in sceneObjects)
-        //{
-        //    Debug.Log("Desactivando " + sceneObj.name);
-        //    sceneObj.gameObject.SetActive(false);
-        //}
-        // exits[0].gameObject.SetActive(false); // Mantener activo para poder hacer clic y viajar a GrandpaSide2D
         foreach (Image closeup in closeUps)
         {
             closeup.gameObject.SetActive(false);
@@ -28,6 +25,8 @@ public class DemoManager : GameplayManager
 
         if (canvas != null)
             canvas.gameObject.SetActive(false);
+        exits[3].SetActive(false);
+        canvaCard.gameObject.SetActive(false);
     }
     public override void ManejarObjetoClickeado(Interactable objetoClickeado)
     {
@@ -49,6 +48,12 @@ public class DemoManager : GameplayManager
             {
                 interactuable = false;
                 StartCoroutine(EjecutarMinijuegoArbol(objetoClickeado));
+            }
+            else if(objetoClickeado.GetId() == 4)
+            {
+                //Activar minijuego cartas
+                StartCoroutine(EjecutarMinijuegoCartas(objetoClickeado));
+
             }
             else
             {
@@ -72,17 +77,44 @@ public class DemoManager : GameplayManager
             }
             else if (objetoClickeado.GetId() == 3)
             {
-                InteractionExit(3, 4, 2, 3);
+                InteractionExit(3, 5, 2, 3);
+            }
+            else if (objetoClickeado.GetId() == 5)
+            {
+                InteractionExit(5, 3, 3, 2);
             }
             else if (objetoClickeado.GetId() == 4)
             {
-                InteractionExit(4, 3, 3, 2);
+                InteractionExit(4, 6, 2, 5);
             }
-            
-           
+            else if (objetoClickeado.GetId() == 6)
+            {
+                InteractionExit(6, 4, 5, 2);
+            }
+            else if(objetoClickeado.GetId() == 7)
+            {
+                SceneManager.LoadScene("GrandpaSide2D");
+            }
+
+
         }
 
     }
+    private IEnumerator EjecutarMinijuegoCartas(Interactable objetoClickeado)
+    {
+        canvaCard.gameObject.SetActive(true);
+        interactuable = false;
+
+
+        yield return new WaitUntil(() => cardScript.playerCoins<=70 || cardScript.playerCoins>=130);
+
+        canvaCard.gameObject.SetActive(false);
+
+
+        // Reactivar la interacción general
+        interactuable = true;
+    }
+
     private IEnumerator EjecutarMinijuegoArbol(Interactable objetoClickeado)
     {
         treeMinigame.gameObject.SetActive(true);
@@ -94,9 +126,10 @@ public class DemoManager : GameplayManager
 
         cameras[3].Priority.Value = 0;
 
-        int index = objetoClickeado.GetId() - 1;
-        sceneObjects[index].gameObject.SetActive(false);
+        sceneObjects[objetoClickeado.GetId() - 1].gameObject.SetActive(false);
+        sceneObjects[1].gameObject.SetActive(false);
         treeMinigame.gameObject.SetActive(false);
+        exits[3].SetActive(true);
 
         // Reactivar la interacción general
         interactuable = true;
