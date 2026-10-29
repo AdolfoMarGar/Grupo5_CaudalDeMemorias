@@ -26,6 +26,7 @@ public class TreeMinigame : MonoBehaviour
     private void OnEnable()
     {
         ReiniciarMinijuego();
+
     }
     public void ReiniciarMinijuego()
     {
@@ -35,24 +36,21 @@ public class TreeMinigame : MonoBehaviour
 
         treeCount = treeBranch.Count;
         dirtCount = dirtSpots.Count;
+        Debug.Log("treebranch count= " + treeCount + " dirtcount: " + dirtCount);
 
         // Reactivamos componentes si el minijuego fue jugado antes
         foreach (var branch in treeBranch)
         {
-            if (branch != null) branch.gameObject.SetActive(true);
+            if (branch != null) branch.SetActive(true);
         }
 
         foreach (var dirt in dirtSpots)
         {
-            if (dirt != null) dirt.gameObject.SetActive(true);
+            if (dirt != null) dirt.SetActive(true);
         }
-
         foreach (var glyph in glyphs)
         {
-            if (glyph != null)
-            {
-                glyph.SetActive(false); // Ocultar hasta completar ramas y tierra
-            }
+            if (glyph != null) glyph.SetActive(false);
         }
     }
     private void RegistrarEventosInteractables()
@@ -73,10 +71,8 @@ public class TreeMinigame : MonoBehaviour
                 if (dirtSpot != null)
                 {
                     Interactable interactableComponent = dirtSpot.GetComponent<Interactable>();
-                    if (interactableComponent != null)
-                    {
-                        interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    }
+                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    
                 }
             }
 
@@ -87,15 +83,8 @@ public class TreeMinigame : MonoBehaviour
                 if (branch != null)
                 {
                     Interactable interactableComponent = branch.GetComponent<Interactable>();
-                    if (interactableComponent != null)
-                    {
-                        //Debug.Log("Suscrito correctamente al NPC: " + branch.name); 
-                        interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    }
-                    else
-                    {
-                        Debug.LogError("El NPC " + branch.name + " no tiene componente Interactable!", branch);
-                    }
+                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    
                 }
             }
 
@@ -105,10 +94,8 @@ public class TreeMinigame : MonoBehaviour
                 if (glyph != null)
                 {
                     Interactable interactableComponent = glyph.GetComponent<Interactable>();
-                    if (interactableComponent != null)
-                    {
-                        interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    }
+                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    
                 }
 
             }
@@ -118,7 +105,7 @@ public class TreeMinigame : MonoBehaviour
 
     public void ManejarObjetoClickeado(Interactable objetoClickeado)
     {
-        //Debug.Log("Se hizo clic en un objeto interactuable: " + objetoClickeado.name);
+        Debug.Log("Se hizo clic en un objeto interactuable: " + objetoClickeado.name);
         if (objetoClickeado is TreeBranch)
         {
             //Debug.Log("Se hizo clic en un TreeBranch: " + objetoClickeado.name);
@@ -151,7 +138,7 @@ public class TreeMinigame : MonoBehaviour
                 }
             }
         }
-        //Debug.Log("Contadores actuales - TreeCount: " + treeCount + ", DirtCount: " + dirtCount);
+        Debug.Log("Contadores actuales - TreeCount: " + treeCount + ", DirtCount: " + dirtCount);
 
     }
 
