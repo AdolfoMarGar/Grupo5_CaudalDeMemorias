@@ -7,16 +7,12 @@ using UnityEngine.InputSystem;
 public class PlayerSideController : MonoBehaviour
 {
     [Header("Velocidades")]
-    [Tooltip("Velocidad normal cuando camina solo")]
     public float normalSpeed = 5f;
-
-    [Tooltip("Velocidad reducida cuando lleva al abuelo de la mano")]
     public float reducedSpeed = 2.5f;
 
     [Header("Estado")]
     [SerializeField] private bool isHoldingHands = false;
 
-    // Límites de cámara cuando el abuelo está cansado
     private bool hasCameraBounds = false;
     private float minCameraX;
     private float maxCameraX;
@@ -45,7 +41,6 @@ public class PlayerSideController : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        // Asegurar orden de renderizado por delante de otros personajes
         if (spriteRenderer != null)
         {
             spriteRenderer.sortingOrder = 5;
@@ -54,7 +49,6 @@ public class PlayerSideController : MonoBehaviour
 
     private void Start()
     {
-        // Ignorar colisiones físicas sólidas con el abuelo para poder pasar por delante de él
         var grandpa = FindAnyObjectByType<GrandpaCompanion>();
         if (grandpa != null)
         {
@@ -90,7 +84,6 @@ public class PlayerSideController : MonoBehaviour
     {
         horizontalInput = ReadHorizontalInput();
 
-        // Orientación del sprite según dirección de movimiento
         if (horizontalInput > 0.05f)
         {
             FacingRight = true;
@@ -102,7 +95,6 @@ public class PlayerSideController : MonoBehaviour
             if (spriteRenderer != null) spriteRenderer.flipX = true;
         }
 
-        // Si los límites de cámara están activos, clampear posición
         if (hasCameraBounds)
         {
             float currentX = transform.position.x;
@@ -118,7 +110,6 @@ public class PlayerSideController : MonoBehaviour
     {
         float targetVelocityX = horizontalInput * CurrentSpeed;
 
-        // Impedir que el jugador empuje hacia fuera de los bordes de la cámara cuando está activo el límite
         if (hasCameraBounds)
         {
             if (transform.position.x <= minCameraX && targetVelocityX < 0f)
@@ -169,7 +160,6 @@ public class PlayerSideController : MonoBehaviour
             }
             catch
             {
-                // Esto es un fallback Fallback silencioso
             }
         }
 #endif
