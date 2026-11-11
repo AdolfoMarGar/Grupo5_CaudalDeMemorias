@@ -71,27 +71,27 @@ public class DemoManager : GameplayManager
             // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
             if (objetoClickeado.GetId() == 1)
             {
-                InteractionExit(1, 2, 1, 2);
+                InteractionExit(2, 1, 2);
             }
             else if(objetoClickeado.GetId() == 2)
             {
-                InteractionExit(2, 1, 2, 1);
+                InteractionExit(1, 2, 1);
             }
             else if (objetoClickeado.GetId() == 3)
             {
-                InteractionExit(3, 5, 2, 3);
+                InteractionExit(5, 2, 3);
             }
             else if (objetoClickeado.GetId() == 5)
             {
-                InteractionExit(5, 3, 3, 2);
+                InteractionExit(3, 3, 2);
             }
             else if (objetoClickeado.GetId() == 4)
             {
-                InteractionExit(4, 6, 2, 5);
+                InteractionExit(6, 2, 5);
             }
             else if (objetoClickeado.GetId() == 6)
             {
-                InteractionExit(6, 4, 5, 2);
+                InteractionExit(4, 5, 2);
             }
             else if(objetoClickeado.GetId() == 7)
             {
@@ -145,25 +145,7 @@ public class DemoManager : GameplayManager
         playerMovementScript.puedeMoverse = true;
         playerInteractableScript.puedeInteractuar = true;
     }
-    private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
-    {
-        var camaraDestino = cameras[idCamaraTo - 1];
-        Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
-        this.gameObject.transform.position = nuevaPosicion;
-
-        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
-
-        camaraDestino.transform.position = new Vector3(
-            nuevaPosicion.x,
-            nuevaPosicion.y,
-            camaraDestino.transform.position.z
-        );
-        camaraDestino.PreviousStateIsValid = false;
-
-        cameras[idCamara-1].Priority.Value -= 1;
-        cameras[idCamaraTo-1].Priority.Value += 1;
-
-    }
+    
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {
         playerMovementScript.puedeMoverse = false;

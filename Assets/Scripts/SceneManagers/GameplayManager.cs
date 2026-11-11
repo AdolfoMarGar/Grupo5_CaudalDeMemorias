@@ -132,4 +132,27 @@ public class GameplayManager : MonoBehaviour
     {
         return scenarioId;
     }
+    
+    // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
+
+    public void InteractionExit(int idExitTo, int idCamara, int idCamaraTo)
+    {
+        Debug.Log("Se va a la salida con id: " + idExitTo + ", desde la cámara con id: " + idCamara + ", hacia la cámara con id: " + idCamaraTo);
+        var camaraDestino = cameras[idCamaraTo - 1];
+        Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
+        this.gameObject.transform.position = nuevaPosicion;
+
+        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
+
+        camaraDestino.transform.position = new Vector3(
+            nuevaPosicion.x,
+            nuevaPosicion.y,
+            camaraDestino.transform.position.z
+        );
+        camaraDestino.PreviousStateIsValid = false;
+
+        cameras[idCamara - 1].Priority.Value -= 1;
+        cameras[idCamaraTo - 1].Priority.Value += 1;
+
+    }
 }
