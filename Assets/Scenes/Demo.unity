@@ -4136,7 +4136,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5880889814651798165, guid: 8961f30c744a93a4cbd2d82ccc816593, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9178905544871563147, guid: 8961f30c744a93a4cbd2d82ccc816593, type: 3}
       propertyPath: m_Pivot.x
@@ -5217,6 +5217,7 @@ GameObject:
   - component: {fileID: 736664093}
   - component: {fileID: 736664094}
   - component: {fileID: 736664095}
+  - component: {fileID: 736664096}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -5375,6 +5376,7 @@ MonoBehaviour:
   - {fileID: 560306678}
   - {fileID: 300369404}
   playerMovementScript: {fileID: 736664089}
+  playerInteractableScript: {fileID: 0}
   topPositions:
   - {fileID: 1835506228}
   - {fileID: 461263609}
@@ -5388,6 +5390,18 @@ MonoBehaviour:
   treeMinigame: {fileID: 963530907}
   cardScript: {fileID: 130648725}
   canvaCard: {fileID: 130648728}
+--- !u!114 &736664096
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 736664088}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7dc69037c25d734caf705ec8a90c38f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractable
 --- !u!1 &751695585
 GameObject:
   m_ObjectHideFlags: 0

@@ -28,21 +28,23 @@ public class DemoManager : GameplayManager
         exits[3].SetActive(false);
         canvaCard.gameObject.SetActive(false);
     }
-    public override void ManejarObjetoClickeado(Interactable objetoClickeado)
+    public override void ManejarInteractable(Interactable objetoClickeado)
     {
         if(!interactuable) return;
+        
+
         Debug.Log("Manejando objeto clickeado: " + objetoClickeado.name);
 
         //Mostrar texto pantalla npc1
         Debug.Log("Objeto clickeado: " + objetoClickeado.name);
-        if (objetoClickeado == npcs[0] && npcs[0].isPlayerColliding())
+        if (objetoClickeado == npcs[0])
         {
             interactuable = false;
             StartCoroutine(ActivarNpcPuente(objetoClickeado));
         }
 
         // Mostramos texto de cualquier objeto de la escena
-        else if (objetoClickeado is SceneObject && sceneObjects[objetoClickeado.GetId() - 1].isPlayerColliding())
+        else if (objetoClickeado is SceneObject )
         {
             if (objetoClickeado.GetId() == 3)
             {
@@ -62,7 +64,7 @@ public class DemoManager : GameplayManager
             }
             
         }
-        else if (objetoClickeado is Exits  && exits[objetoClickeado.GetId() - 1].isPlayerColliding())
+        else if (objetoClickeado is Exits )
         {
             Debug.Log("Objeto clickeado: " + objetoClickeado.name + " es una salida y el jugador está colisionando con ella.");
 
@@ -98,10 +100,13 @@ public class DemoManager : GameplayManager
 
 
         }
+        
 
     }
     private IEnumerator EjecutarMinijuegoCartas(Interactable objetoClickeado)
     {
+        playerMovementScript.puedeMoverse = false;
+        playerInteractableScript.puedeInteractuar = false;
         canvaCard.gameObject.SetActive(true);
         interactuable = false;
 
@@ -113,10 +118,14 @@ public class DemoManager : GameplayManager
 
         // Reactivar la interacción general
         interactuable = true;
+        playerMovementScript.puedeMoverse = true;
+        playerInteractableScript.puedeInteractuar = true;
     }
 
     private IEnumerator EjecutarMinijuegoArbol(Interactable objetoClickeado)
     {
+        playerMovementScript.puedeMoverse = false;
+        playerInteractableScript.puedeInteractuar = false;
         treeMinigame.gameObject.SetActive(true);
         cameras[3].Priority.Value = 2;
 
@@ -133,6 +142,8 @@ public class DemoManager : GameplayManager
 
         // Reactivar la interacción general
         interactuable = true;
+        playerMovementScript.puedeMoverse = true;
+        playerInteractableScript.puedeInteractuar = true;
     }
     private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
     {
@@ -155,6 +166,8 @@ public class DemoManager : GameplayManager
     }
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {
+        playerMovementScript.puedeMoverse = false;
+        playerInteractableScript.puedeInteractuar = false;
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         bool dialogosTerminados = false;
 
@@ -177,15 +190,19 @@ public class DemoManager : GameplayManager
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         interactuable = true;
-
+        playerMovementScript.puedeMoverse = true;
+        playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {
             dialogosTerminados = true;
         }
+
     }
 
     private IEnumerator textObjectScene(Interactable objetoClickeado)
     {
+        playerMovementScript.puedeMoverse = false;
+        playerInteractableScript.puedeInteractuar = false;
         int id = objetoClickeado.GetId() - 1;
         Debug.Log("ObjectScene: " + objetoClickeado.name);
         //objetoClickeado.gameObject.SetActive(false);
@@ -208,7 +225,8 @@ public class DemoManager : GameplayManager
 
         canvas.gameObject.SetActive(false);
         interactuable = true;
-
+        playerMovementScript.puedeMoverse = true;
+        playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {
             dialogosTerminados = true;

@@ -9,11 +9,10 @@ public class Interactable : MonoBehaviour
     [SerializeField] private int selectedText = 0;
     protected Color defaultColor;
     private Collider2D col2D;
-
+    protected bool inRange = false;
     public event Action<Interactable> OnClicked;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Awake() // Cambiado de Start a Awake
+    void Awake() 
     {
         
         col2D = GetComponent<Collider2D>();
@@ -108,35 +107,7 @@ public class Interactable : MonoBehaviour
     {
         //Debug.Log("Interactuando con objeto genérico ID : " + id);
         OnClicked?.Invoke(this);
-    }
-
-    private void OnMouseDown()
-    {
-        Debug.Log("¡Se ha detectado un clic físico en el objeto: " + gameObject.name + "!");
-
-        if (active)
-        {
-            Interact();
-        }
-        else
-        {
-            Debug.Log("El objeto está inactivo (active = false), por eso no interactúa.");
-        }
-    }
-
-    public bool isPlayerColliding()
-    {
-        if (col2D == null)
-        {
-            Debug.LogWarning("Collider2D no asignado en " + gameObject.name);
-            return false;
-        }
-
-        // Comprueba si la forma de col2D está en contacto físico con la capa "Player"
-        bool isColliding = col2D.IsTouchingLayers(LayerMask.GetMask("Player"));
-
-        Debug.Log("Contacto con player: " + isColliding);
-        return isColliding;
+        // si estaba administrando desde un script externo, como puedo seguir haciendolo desde ahi? te paso un ejemplo.
     }
 
 }

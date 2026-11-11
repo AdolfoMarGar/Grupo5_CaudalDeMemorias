@@ -21,6 +21,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private SpriteRenderer spriteRenderer;
     [Tooltip("Gira automáticamente el sprite en X según la dirección horizontal del movimiento")]
     public bool autoFlipX = true;
+    public bool puedeMoverse = true;
 
     private void Start()
     {
@@ -41,6 +42,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void Update()
     {
+        if (!puedeMoverse) return;
         // GetAxis devuelve un valor entre -1 y 1, ayuda a que el movimiento sea mas fluido con el mando
         //horizontal y vertical es el nombre de los axis de unity, compatibles pa mando y teclado
         float moveX = Input.GetAxis("Horizontal");

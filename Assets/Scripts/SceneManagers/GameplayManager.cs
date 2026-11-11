@@ -17,6 +17,7 @@ public class GameplayManager : MonoBehaviour
     [SerializeField] protected List<Image> closeUps;
     [SerializeField] protected List<CinemachineCamera> cameras;
     [SerializeField] protected PlayerMovement playerMovementScript;
+    [SerializeField] protected PlayerInteractable playerInteractableScript;
     [SerializeField] protected List<Transform> topPositions;
     [SerializeField] protected List<Transform> bottomPositions;
 
@@ -55,11 +56,30 @@ public class GameplayManager : MonoBehaviour
         {
             playerMovementScript = FindAnyObjectByType<PlayerMovement>();
         }
+        if (!FindAnyObjectByType<PlayerInteractable>())
+        {
+            Debug.LogError("¡No se encontró ningún PlayerInteractable en la escena!");
+        }
+        else
+        {
+            playerInteractableScript = FindAnyObjectByType<PlayerInteractable>();
+        }
 
-        RegistrarEventosInteractables();
+        // Nos suscribimos al evento del jugador
+        if (playerInteractableScript != null)
+        {
+            playerInteractableScript.OnPlayerInteractRequest += ManejarInteractable;
+            Debug.Log("Suscrito correctamente al evento de interacción del jugador.");
+        }
+        else
+        {
+            Debug.LogError("¡No se encontró PlayerInteractable en la escena!");
+        }
+
+        RegistrarInteractables();
     }
 
-    private void RegistrarEventosInteractables()
+    private void RegistrarInteractables()
     {
         Debug.Log("Registrando eventos de interactuables para todos los escenarios.");
         if (scenarios == null || scenarios.Count == 0) return;
@@ -82,50 +102,12 @@ public class GameplayManager : MonoBehaviour
             }
              
            
-            // 1. Registrar SceneObjects
-            foreach (var sceneObj in sceneObjects)
-            {
-                if (sceneObj != null)
-                {
-                    Interactable interactableComponent = sceneObj.GetComponent<Interactable>();
-                    Debug.Log("Suscrito correctamente al SceneObject: " + sceneObj.name);
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    
-                }
-            }
-
-            // 2. Registrar NPCs
-            // Dentro de RegistrarEventosInteractables, en el bucle de NPCs:
-            foreach (var npc in npcs)
-            {
-                if (npc != null)
-                {
-                    Interactable interactableComponent = npc.GetComponent<Interactable>();
-                    Debug.Log("Suscrito correctamente al NPC: " + npc.name);
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    
-                }
-            }
-
-            // 3. Registrar Exits
-            foreach (var exit in exits)
-            {
-                if (exit != null)
-                {
-                    Interactable interactableComponent = exit.GetComponent<Interactable>();
-                    Debug.Log("Suscrito correctamente al Exit: " + exit.name);
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
-                    
-                }
-                
-            }
             Debug.Log("La escenas Tienen " + scenarios.Count + " escenarios, " + npcs.Count + " NPCs, " + sceneObjects.Count + " SceneObjects y " + exits.Count + " Exits. Total elementos: " + (scenarios.Count + npcs.Count + sceneObjects.Count + exits.Count));
-            //Debug.Log("total elementos registrados a eventos: "+ interactableComponent.OnClicked.GetInvocationList().Length);
         }
 
     }
 
-    public virtual void ManejarObjetoClickeado(Interactable objetoClickeado)
+    public virtual void ManejarInteractable(Interactable objetoClickeado)
     {
         
 
@@ -133,38 +115,10 @@ public class GameplayManager : MonoBehaviour
 
     private void OnDestroy()
     {
-        foreach (var sceneObj in sceneObjects)
+        if (playerMovementScript != null)
         {
-            if (sceneObj.gameObject != null)
-            {
-                Interactable interactableComponent = sceneObj.GetComponent<Interactable>();
-                if (interactableComponent != null)
-                {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
-                }
-            }
-        }
-        foreach (var npc in npcs)
-        {
-            if (npc.gameObject != null)
-            {
-                Interactable interactableComponent = npc.GetComponent<Interactable>();
-                if (interactableComponent != null)
-                {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
-                }
-            }
-        }
-        foreach (var exit in exits)
-        {
-            if (exit.gameObject != null)
-            {
-                Interactable interactableComponent = exit.GetComponent<Interactable>();
-                if (interactableComponent != null)
-                {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
-                }
-            }
+            // Nos desuscribimos del jugador
+            playerInteractableScript.OnPlayerInteractRequest -= ManejarInteractable;
         }
     }
 

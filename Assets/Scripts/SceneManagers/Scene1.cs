@@ -47,7 +47,7 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = sceneObj.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                 }
             }
         }
@@ -60,7 +60,7 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = npc.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                 }
             }
         }
@@ -73,13 +73,13 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = exit.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                 }
             }
         }
     }
 
-    private void ManejarObjetoClickeado(Interactable objetoClickeado)
+    private void ManejarInteractable(Interactable objetoClickeado)
     {
         //Debug.Log($"[Scene1] Se hizo clic en el objeto interactuable: {objetoClickeado.gameObject.name} con ID: {objetoClickeado.GetId()}");
         if (objetoClickeado == npcs[1])
@@ -105,7 +105,7 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = sceneObj.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }
@@ -116,7 +116,7 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = npc.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }
@@ -127,7 +127,7 @@ public class Scene1 : MonoBehaviour
                 Interactable interactableComponent = exit.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }
