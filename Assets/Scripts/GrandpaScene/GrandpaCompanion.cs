@@ -1,25 +1,23 @@
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class GrandpaCompanion : MonoBehaviour
 {
-    public PlayerSideController player;
-    public GrandpaCameraFollow cameraFollow;
+    [SerializeField] private PlayerSideController player;
+    [SerializeField] private GrandpaCameraFollow cameraFollow;
 
-    public float followDistance = 1.3f;
-    public float followSpeed = 3.8f;
+    [SerializeField] private float followDistance = 1.3f;
+    [SerializeField] private float followSpeed = 3.8f;
 
-    public float minTiredTime = 16f;
-    public float maxTiredTime = 26f;
+    [SerializeField] private float minTiredTime = 16f;
+    [SerializeField] private float maxTiredTime = 26f;
 
-    public float stillTimeToWander = 2.5f;
-    public float wanderSpeed = 1.4f;
+    [SerializeField] private float stillTimeToWander = 2.5f;
+    [SerializeField] private float wanderSpeed = 1.4f;
 
-    public float breathSpeed = 8f;
-    public float breathIntensity = 0.08f;
+    [SerializeField] private float breathSpeed = 8f;
+    [SerializeField] private float breathIntensity = 0.08f;
 
     [SerializeField] private bool holdingHands = false;
     [SerializeField] private bool isTired = false;
@@ -41,6 +39,8 @@ public class GrandpaCompanion : MonoBehaviour
     public bool IsTired => isTired;
     public bool IsWandering => isWandering;
     public bool IsPlayerInRange => isPlayerInRange;
+    public float FollowDistance => followDistance;
+    public float FollowSpeed => followSpeed;
 
     private void Awake()
     {
@@ -340,30 +340,15 @@ public class GrandpaCompanion : MonoBehaviour
 
     private bool CheckInteractInput()
     {
-        bool pressed = false;
-
-#if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
-            pressed = true;
+            return true;
         }
-#endif
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        if (!pressed)
+        if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
-            try
-            {
-                if (Input.GetKeyDown(KeyCode.E))
-                    pressed = true;
-            }
-            catch
-            {
-            }
+            return true;
         }
-#endif
-
-        return pressed;
+        return false;
     }
 
     private void OnGUI()

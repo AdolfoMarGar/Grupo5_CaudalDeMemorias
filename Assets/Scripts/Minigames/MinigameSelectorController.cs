@@ -5,11 +5,37 @@ using UnityEngine.SceneManagement;
 
 public class MinigameSelectorController : MonoBehaviour
 {
-    public string mainMenuSceneName = "MainMenu";
-    public Button backButton;
-    public Transform cardsContainer;
-    public GameObject cardPrefab;
-    public List<MinigameItemData> minigames = new List<MinigameItemData>();
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private Button backButton;
+    [SerializeField] private Transform cardsContainer;
+    [SerializeField] private GameObject cardPrefab;
+    [SerializeField] private List<MinigameItemData> minigames = new List<MinigameItemData>();
+
+    public string MainMenuSceneName
+    {
+        get => mainMenuSceneName;
+        set => mainMenuSceneName = value;
+    }
+
+    public Button BackButton
+    {
+        get => backButton;
+        set => backButton = value;
+    }
+
+    public Transform CardsContainer
+    {
+        get => cardsContainer;
+        set => cardsContainer = value;
+    }
+
+    public GameObject CardPrefab
+    {
+        get => cardPrefab;
+        set => cardPrefab = value;
+    }
+
+    public List<MinigameItemData> Minigames => minigames;
 
     private void Awake()
     {

@@ -29,5 +29,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MinigamesMenu.unity
     guid: 2080b9f96b8213f47b9a85161e863bf1
+  - enabled: 1
+    path: Assets/Scenes/BarDiceMinigame.unity
+    guid: a027393ed223f1341936a7aaf97bc3e2
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

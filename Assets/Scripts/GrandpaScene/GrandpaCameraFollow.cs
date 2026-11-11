@@ -3,19 +3,17 @@ using UnityEngine;
 [RequireComponent(typeof(Camera))]
 public class GrandpaCameraFollow : MonoBehaviour
 {
-    [Header("Objetivos")]
-    public Transform player;
-    public GrandpaCompanion grandpa;
-
-    [Header("Configuración de Seguimiento")]
-    public float smoothSpeed = 4f;
-    public Vector3 offset = new Vector3(0f, 1.2f, -10f);
-
-    [Header("Límites de Pantalla para el Jugador")]
-    public float screenPadding = 0.5f;
+    [SerializeField] private Transform player;
+    [SerializeField] private GrandpaCompanion grandpa;
+    [SerializeField] private float smoothSpeed = 4f;
+    [SerializeField] private Vector3 offset = new Vector3(0f, 1.2f, -10f);
+    [SerializeField] private float screenPadding = 0.5f;
 
     private Camera cam;
     private PlayerSideController playerController;
+
+    public Vector3 Offset => offset;
+    public float SmoothSpeed => smoothSpeed;
 
     private void Awake()
     {

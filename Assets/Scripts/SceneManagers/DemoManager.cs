@@ -105,8 +105,12 @@ public class DemoManager : GameplayManager
         canvaCard.gameObject.SetActive(true);
         interactuable = false;
 
+        if (cardScript != null)
+        {
+            cardScript.StartNewRound();
+        }
 
-        yield return new WaitUntil(() => cardScript.playerCoins<=70 || cardScript.playerCoins>=130);
+        yield return new WaitUntil(() => cardScript.ExitRequested || cardScript.PlayerCoins <= 70 || cardScript.PlayerCoins >= 130);
 
         canvaCard.gameObject.SetActive(false);
 
@@ -136,22 +140,81 @@ public class DemoManager : GameplayManager
     }
     private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
     {
-        var camaraDestino = cameras[idCamaraTo - 1];
+        int camToIndex = idCamaraTo - 1;
+        int camFromIndex = idCamara - 1;
+
+        var camaraDestino = (camToIndex >= 0 && camToIndex < cameras.Count) ? cameras[camToIndex] : null;
         Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
         this.gameObject.transform.position = nuevaPosicion;
 
-        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
+        UpdatePlayerDepthLimitsForCamera(camaraDestino, camToIndex);
 
-        camaraDestino.transform.position = new Vector3(
-            nuevaPosicion.x,
-            nuevaPosicion.y,
-            camaraDestino.transform.position.z
-        );
-        camaraDestino.PreviousStateIsValid = false;
+        if (camaraDestino != null)
+        {
+            camaraDestino.transform.position = new Vector3(
+                nuevaPosicion.x,
+                nuevaPosicion.y,
+                camaraDestino.transform.position.z
+            );
+            camaraDestino.PreviousStateIsValid = false;
+            camaraDestino.Priority.Value += 1;
+        }
 
-        cameras[idCamara-1].Priority.Value -= 1;
-        cameras[idCamaraTo-1].Priority.Value += 1;
+        if (camFromIndex >= 0 && camFromIndex < cameras.Count && cameras[camFromIndex] != null)
+        {
+            cameras[camFromIndex].Priority.Value -= 1;
+        }
+    }
 
+    private void UpdatePlayerDepthLimitsForCamera(Unity.Cinemachine.CinemachineCamera cam, int camIndex)
+    {
+        if (playerMovementScript == null) return;
+
+        Transform top = null;
+        Transform bot = null;
+
+        if (cam != null)
+        {
+            top = cam.transform.Find("TopLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("TopLimit") : null);
+            bot = cam.transform.Find("BotLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("BotLimit") : null);
+
+            if (top == null || bot == null)
+            {
+                var parent = cam.transform.parent;
+                if (parent != null)
+                {
+                    for (int i = 0; i < parent.childCount; i++)
+                    {
+                        var child = parent.GetChild(i);
+                        if (child.name.StartsWith("TopLimit")) top = child;
+                        if (child.name.StartsWith("BotLimit")) bot = child;
+                    }
+                }
+            }
+        }
+
+        if (top != null && bot != null)
+        {
+            playerMovementScript.SetLimitsPosition(top, bot);
+            return;
+        }
+
+        if (topPositions != null && bottomPositions != null && topPositions.Count > 0)
+        {
+            int safeIndex = Mathf.Clamp(camIndex, 0, topPositions.Count - 1);
+            if (safeIndex < bottomPositions.Count && topPositions[safeIndex] != null && bottomPositions[safeIndex] != null)
+            {
+                playerMovementScript.SetLimitsPosition(topPositions[safeIndex], bottomPositions[safeIndex]);
+                return;
+            }
+        }
+
+        if (cam != null)
+        {
+            float ortho = cam.Lens.OrthographicSize;
+            float camY = cam.transform.position.y;
+            playerMovementScript.SetLimits(camY + (ortho * 0.7f), camY - (ortho * 0.9f));
+        }
     }
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {
