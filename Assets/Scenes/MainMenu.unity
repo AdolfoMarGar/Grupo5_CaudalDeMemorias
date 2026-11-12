@@ -1155,6 +1155,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuController
   demoSceneName: Demo
+  minigamesSceneName: MinigamesMenu
   startButton: {fileID: 158747966}
   fantasiaButton: {fileID: 1158345587}
   optionsButton: {fileID: 1486977415}

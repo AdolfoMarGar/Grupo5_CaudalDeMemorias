@@ -71,7 +71,7 @@ public class TreeMinigame : MonoBehaviour
                 if (dirtSpot != null)
                 {
                     Interactable interactableComponent = dirtSpot.GetComponent<Interactable>();
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                     
                 }
             }
@@ -83,7 +83,7 @@ public class TreeMinigame : MonoBehaviour
                 if (branch != null)
                 {
                     Interactable interactableComponent = branch.GetComponent<Interactable>();
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                     
                 }
             }
@@ -94,7 +94,7 @@ public class TreeMinigame : MonoBehaviour
                 if (glyph != null)
                 {
                     Interactable interactableComponent = glyph.GetComponent<Interactable>();
-                    interactableComponent.OnClicked += ManejarObjetoClickeado;
+                    interactableComponent.OnClicked += ManejarInteractable;
                     
                 }
 
@@ -103,7 +103,7 @@ public class TreeMinigame : MonoBehaviour
 
     }
 
-    public void ManejarObjetoClickeado(Interactable objetoClickeado)
+    public void ManejarInteractable(Interactable objetoClickeado)
     {
         Debug.Log("Se hizo clic en un objeto interactuable: " + objetoClickeado.name);
         if (objetoClickeado is TreeBranch)
@@ -151,7 +151,7 @@ public class TreeMinigame : MonoBehaviour
                 Interactable interactableComponent = dirtSpot.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }
@@ -162,7 +162,7 @@ public class TreeMinigame : MonoBehaviour
                 Interactable interactableComponent = treeBranch.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }
@@ -173,7 +173,7 @@ public class TreeMinigame : MonoBehaviour
                 Interactable interactableComponent = glyph.GetComponent<Interactable>();
                 if (interactableComponent != null)
                 {
-                    interactableComponent.OnClicked -= ManejarObjetoClickeado;
+                    interactableComponent.OnClicked -= ManejarInteractable;
                 }
             }
         }

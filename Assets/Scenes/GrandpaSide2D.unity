@@ -812,14 +812,18 @@ MonoBehaviour:
   cameraFollow: {fileID: 1319810519}
   followDistance: 1.3
   followSpeed: 3.8
-  minTiredTime: 4
-  maxTiredTime: 8
+  minTiredTime: 16
+  maxTiredTime: 26
+  stillTimeToWander: 2.5
+  wanderSpeed: 1.4
   breathSpeed: 8
   breathIntensity: 0.08
   holdingHands: 0
   isTired: 0
+  isWandering: 0
   isPlayerInRange: 0
-  currentTimer: 0
+  currentTiredTimer: 0
+  currentStillTimer: 0
 --- !u!50 &1776641070
 Rigidbody2D:
   serializedVersion: 5

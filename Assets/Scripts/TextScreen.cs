@@ -28,6 +28,7 @@ public class TextScreen : MonoBehaviour
         Debug.Log("Mostrando textos desde el índice " + selectedText + " hasta " + endText);
         StartCoroutine(RutinaMostrarTextos(texts, selectedText, endText));
     }
+
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
         yield return null;
@@ -74,13 +75,17 @@ public class TextScreen : MonoBehaviour
     {
         bool mouseClick = Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame;
         bool touchClick = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame;
-        return mouseClick || touchClick;
+        bool spaceClick = Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame;
+
+        return mouseClick || touchClick || spaceClick;
     }
 
     private bool SeMantienePresionado()
     {
         bool mouseHold = Mouse.current != null && Mouse.current.leftButton.isPressed;
         bool touchHold = Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed;
-        return mouseHold || touchHold;
+        bool spaceHold = Keyboard.current != null && Keyboard.current.spaceKey.isPressed;
+
+        return mouseHold || touchHold || spaceHold;
     }
 }

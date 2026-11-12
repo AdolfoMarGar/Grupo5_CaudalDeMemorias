@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 5a7f739829bb1e84786cb6dac15f2651
+guid: b7dfa462deeb2f141b3c3c6db6d62cd3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4404017307025601160
-    second: bc puenteSolopuente_0
+      213: -8492046020669927577
+    second: bc calleagua_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,9 +46,9 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 150
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: bc puenteSolopuente_0
+      name: bc calleagua_0
       rect:
         serializedVersion: 2
         x: 0
-        y: 639
-        width: 3508
-        height: 972
+        y: 0
+        width: 6000
+        height: 2480
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 882fee148663e1d30800000000000000
-      internalID: 4404017307025601160
+      spriteID: 76f03b11321362a80800000000000000
+      internalID: -8492046020669927577
       vertices: []
       indices: 
       edges: []
@@ -138,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      bc puenteSolopuente_0: 4404017307025601160
+      bc calleagua_0: -8492046020669927577
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

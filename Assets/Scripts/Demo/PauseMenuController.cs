@@ -1,39 +1,23 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
-/// <summary>
-/// Controla el menú de pausa de la escena Demo.
-/// Al pulsar Escape pausa el juego, congela el tiempo y muestra el menú con fondo al 75% de opacidad.
-/// Gestiona la reanudación, apertura del panel de opciones y vuelta al menú principal.
-/// </summary>
 public class PauseMenuController : MonoBehaviour
 {
-    [Header("Configuración")]
-    [Tooltip("Nombre de la escena del menú principal a cargar al pulsar Salir")]
-    public string mainMenuSceneName = "MainMenu";
+    [SerializeField] private string mainMenuSceneName = "MainMenu";
+    [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseButtonsContainer;
+    [SerializeField] private GameObject optionsPanel;
+    [SerializeField] private Button resumeButton;
+    [SerializeField] private Button optionsButton;
+    [SerializeField] private Button quitButton;
+    [SerializeField] private bool isPaused = false;
 
-    [Header("Paneles UI")]
-    [Tooltip("Panel principal del menú de pausa (contiene fondo al 75%, título y botones)")]
-    public GameObject pausePanel;
-
-    [Tooltip("Contenedor de los botones del menú de pausa para ocultarlos al abrir opciones")]
-    public GameObject pauseButtonsContainer;
-
-    [Tooltip("Panel de opciones (el mismo que en el menú principal)")]
-    public GameObject optionsPanel;
-
-    [Header("Botones del Menú de Pausa")]
-    public Button resumeButton;
-    public Button optionsButton;
-    public Button quitButton;
-
-    [Header("Estado")]
-    public bool isPaused = false;
+    public bool IsPaused => isPaused;
 
     private void Start()
     {
-        // Conexión de listeners de botones
         if (resumeButton != null)
         {
             resumeButton.onClick.RemoveAllListeners();
@@ -52,7 +36,6 @@ public class PauseMenuController : MonoBehaviour
             quitButton.onClick.AddListener(QuitToMainMenu);
         }
 
-        // Conectar el cierre de opciones para restaurar los botones de pausa
         if (optionsPanel != null)
         {
             var omc = optionsPanel.GetComponent<OptionsMenuController>();
@@ -62,41 +45,48 @@ public class PauseMenuController : MonoBehaviour
             }
         }
 
-        // Asegurar estado inicial no pausado
         ResumeGame();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (CheckEscapeInput())
         {
             HandleEscapeKey();
         }
     }
 
+    private bool CheckEscapeInput()
+    {
+        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        {
+            return true;
+        }
+        if (Gamepad.current != null && Gamepad.current.startButton.wasPressedThisFrame)
+        {
+            return true;
+        }
+        return false;
+    }
+
     public void HandleEscapeKey()
     {
-        // 1. Si el panel de opciones está abierto, Escape lo cierra y vuelve al menú de pausa
         if (optionsPanel != null && optionsPanel.activeSelf)
         {
             CloseOptionsMenu();
             return;
         }
 
-        // 2. Si el menú de pausa está abierto, Escape reanuda el juego
         if (isPaused)
         {
             ResumeGame();
         }
-        else // 3. Si el juego está corriendo, Escape pausa el juego
+        else
         {
             PauseGame();
         }
     }
 
-    /// <summary>
-    /// Pausa el juego, congela el tiempo a 0 y muestra el menú de pausa.
-    /// </summary>
     public void PauseGame()
     {
         isPaused = true;
@@ -116,13 +106,8 @@ public class PauseMenuController : MonoBehaviour
         {
             optionsPanel.SetActive(false);
         }
-
-        Debug.Log("[PauseMenu] Juego pausado (TimeScale = 0).");
     }
 
-    /// <summary>
-    /// Reanuda el juego, restaura el tiempo a 1 y oculta el menú de pausa.
-    /// </summary>
     public void ResumeGame()
     {
         isPaused = false;
@@ -137,13 +122,8 @@ public class PauseMenuController : MonoBehaviour
         {
             optionsPanel.SetActive(false);
         }
-
-        Debug.Log("[PauseMenu] Juego reanudado (TimeScale = 1).");
     }
 
-    /// <summary>
-    /// Abre el panel de opciones y oculta los botones de pausa para centrar la atención.
-    /// </summary>
     public void OpenOptionsMenu()
     {
         if (optionsPanel != null)
@@ -163,13 +143,8 @@ public class PauseMenuController : MonoBehaviour
         {
             pauseButtonsContainer.SetActive(false);
         }
-
-        Debug.Log("[PauseMenu] Panel de Opciones abierto desde pausa.");
     }
 
-    /// <summary>
-    /// Cierra el panel de opciones y restaura los botones de pausa.
-    /// </summary>
     public void CloseOptionsMenu()
     {
         if (optionsPanel != null && optionsPanel.activeSelf)
@@ -199,27 +174,18 @@ public class PauseMenuController : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Vuelve al menú principal restaurando previamente la escala de tiempo.
-    /// </summary>
     public void QuitToMainMenu()
     {
-        Debug.Log($"[PauseMenu] Saliendo al menú principal '{mainMenuSceneName}'...");
         Time.timeScale = 1f;
 
         if (!string.IsNullOrEmpty(mainMenuSceneName))
         {
             SceneManager.LoadScene(mainMenuSceneName);
         }
-        else
-        {
-            Debug.LogError("[PauseMenu] No se ha especificado el nombre de la escena del menú principal.");
-        }
     }
 
     private void OnDestroy()
     {
-        // Garantizar que la escala de tiempo se restablezca siempre al salir o destruir el objeto
         Time.timeScale = 1f;
     }
 }

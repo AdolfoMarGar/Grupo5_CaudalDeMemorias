@@ -28,21 +28,23 @@ public class DemoManager : GameplayManager
         exits[3].SetActive(false);
         canvaCard.gameObject.SetActive(false);
     }
-    public override void ManejarObjetoClickeado(Interactable objetoClickeado)
+    public override void ManejarInteractable(Interactable objetoClickeado)
     {
         if(!interactuable) return;
+        
+
         Debug.Log("Manejando objeto clickeado: " + objetoClickeado.name);
 
         //Mostrar texto pantalla npc1
         Debug.Log("Objeto clickeado: " + objetoClickeado.name);
-        if (objetoClickeado == npcs[0] && npcs[0].isPlayerColliding())
+        if (objetoClickeado == npcs[0])
         {
             interactuable = false;
             StartCoroutine(ActivarNpcPuente(objetoClickeado));
         }
 
         // Mostramos texto de cualquier objeto de la escena
-        else if (objetoClickeado is SceneObject && sceneObjects[objetoClickeado.GetId() - 1].isPlayerColliding())
+        else if (objetoClickeado is SceneObject )
         {
             if (objetoClickeado.GetId() == 3)
             {
@@ -62,34 +64,34 @@ public class DemoManager : GameplayManager
             }
             
         }
-        else if (objetoClickeado is Exits  && exits[objetoClickeado.GetId() - 1].isPlayerColliding())
+        else if (objetoClickeado is Exits )
         {
             Debug.Log("Objeto clickeado: " + objetoClickeado.name + " es una salida y el jugador está colisionando con ella.");
 
             // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
             if (objetoClickeado.GetId() == 1)
             {
-                InteractionExit(1, 2, 1, 2);
+                InteractionExit(2, 1, 2);
             }
             else if(objetoClickeado.GetId() == 2)
             {
-                InteractionExit(2, 1, 2, 1);
+                InteractionExit(1, 2, 1);
             }
             else if (objetoClickeado.GetId() == 3)
             {
-                InteractionExit(3, 5, 2, 3);
+                InteractionExit(5, 2, 3);
             }
             else if (objetoClickeado.GetId() == 5)
             {
-                InteractionExit(5, 3, 3, 2);
+                InteractionExit(3, 3, 2);
             }
             else if (objetoClickeado.GetId() == 4)
             {
-                InteractionExit(4, 6, 2, 5);
+                InteractionExit(6, 2, 5);
             }
             else if (objetoClickeado.GetId() == 6)
             {
-                InteractionExit(6, 4, 5, 2);
+                InteractionExit(4, 5, 2);
             }
             else if(objetoClickeado.GetId() == 7)
             {
@@ -98,25 +100,36 @@ public class DemoManager : GameplayManager
 
 
         }
+        
 
     }
     private IEnumerator EjecutarMinijuegoCartas(Interactable objetoClickeado)
     {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
         canvaCard.gameObject.SetActive(true);
         interactuable = false;
 
+        if (cardScript != null)
+        {
+            cardScript.StartNewRound();
+        }
 
-        yield return new WaitUntil(() => cardScript.playerCoins<=70 || cardScript.playerCoins>=130);
+        yield return new WaitUntil(() => cardScript.ExitRequested || cardScript.PlayerCoins <= 70 || cardScript.PlayerCoins >= 130);
 
         canvaCard.gameObject.SetActive(false);
 
 
         // Reactivar la interacción general
         interactuable = true;
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
     }
 
     private IEnumerator EjecutarMinijuegoArbol(Interactable objetoClickeado)
     {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
         treeMinigame.gameObject.SetActive(true);
         cameras[3].Priority.Value = 2;
 
@@ -133,28 +146,65 @@ public class DemoManager : GameplayManager
 
         // Reactivar la interacción general
         interactuable = true;
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
     }
-    private void InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
+
+    private void UpdatePlayerDepthLimitsForCamera(Unity.Cinemachine.CinemachineCamera cam, int camIndex)
     {
-        var camaraDestino = cameras[idCamaraTo - 1];
-        Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
-        this.gameObject.transform.position = nuevaPosicion;
+        if (playerMovementScript == null) return;
 
-        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
+        Transform top = null;
+        Transform bot = null;
 
-        camaraDestino.transform.position = new Vector3(
-            nuevaPosicion.x,
-            nuevaPosicion.y,
-            camaraDestino.transform.position.z
-        );
-        camaraDestino.PreviousStateIsValid = false;
+        if (cam != null)
+        {
+            top = cam.transform.Find("TopLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("TopLimit") : null);
+            bot = cam.transform.Find("BotLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("BotLimit") : null);
 
-        cameras[idCamara-1].Priority.Value -= 1;
-        cameras[idCamaraTo-1].Priority.Value += 1;
+            if (top == null || bot == null)
+            {
+                var parent = cam.transform.parent;
+                if (parent != null)
+                {
+                    for (int i = 0; i < parent.childCount; i++)
+                    {
+                        var child = parent.GetChild(i);
+                        if (child.name.StartsWith("TopLimit")) top = child;
+                        if (child.name.StartsWith("BotLimit")) bot = child;
+                    }
+                }
+            }
+        }
 
+        if (top != null && bot != null)
+        {
+            playerMovementScript.SetLimitsPosition(top, bot);
+            return;
+        }
+
+        if (topPositions != null && bottomPositions != null && topPositions.Count > 0)
+        {
+            int safeIndex = Mathf.Clamp(camIndex, 0, topPositions.Count - 1);
+            if (safeIndex < bottomPositions.Count && topPositions[safeIndex] != null && bottomPositions[safeIndex] != null)
+            {
+                playerMovementScript.SetLimitsPosition(topPositions[safeIndex], bottomPositions[safeIndex]);
+                return;
+            }
+        }
+
+        if (cam != null)
+        {
+            float ortho = cam.Lens.OrthographicSize;
+            float camY = cam.transform.position.y;
+            playerMovementScript.SetLimits(camY + (ortho * 0.7f), camY - (ortho * 0.9f));
+        }
     }
+
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         bool dialogosTerminados = false;
 
@@ -177,15 +227,19 @@ public class DemoManager : GameplayManager
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         interactuable = true;
-
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {
             dialogosTerminados = true;
         }
+
     }
 
     private IEnumerator textObjectScene(Interactable objetoClickeado)
     {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
         int id = objetoClickeado.GetId() - 1;
         Debug.Log("ObjectScene: " + objetoClickeado.name);
         //objetoClickeado.gameObject.SetActive(false);
@@ -208,7 +262,8 @@ public class DemoManager : GameplayManager
 
         canvas.gameObject.SetActive(false);
         interactuable = true;
-
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {
             dialogosTerminados = true;

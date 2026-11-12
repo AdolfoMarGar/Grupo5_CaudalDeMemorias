@@ -1,55 +1,46 @@
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
 [RequireComponent(typeof(BoxCollider2D))]
 public class GrandpaCompanion : MonoBehaviour
 {
-    [Header("Referencias")]
-    [Tooltip("Referencia al jugador")]
-    public PlayerSideController player;
+    [SerializeField] private PlayerSideController player;
+    [SerializeField] private GrandpaCameraFollow cameraFollow;
 
-    [Tooltip("Referencia a la cámara para avisarle de dejar de seguir")]
-    public GrandpaCameraFollow cameraFollow;
+    [SerializeField] private float followDistance = 1.3f;
+    [SerializeField] private float followSpeed = 3.8f;
 
-    [Header("Acompañamiento")]
-    [Tooltip("Distancia que mantiene detrás del jugador")]
-    public float followDistance = 1.3f;
+    [SerializeField] private float minTiredTime = 16f;
+    [SerializeField] private float maxTiredTime = 26f;
 
-    [Tooltip("Velocidad base con la que sigue al jugador")]
-    public float followSpeed = 3.8f;
+    [SerializeField] private float stillTimeToWander = 2.5f;
+    [SerializeField] private float wanderSpeed = 1.4f;
 
-    [Header("Tiempos de cansancio")]
-    [Tooltip("Tiempo mínimo antes de cansarse")]
-    public float minTiredTime = 4f;
+    [SerializeField] private float breathSpeed = 8f;
+    [SerializeField] private float breathIntensity = 0.08f;
 
-    [Tooltip("Tiempo máximo antes de cansarse")]
-    public float maxTiredTime = 8f;
-
-    [Header("Efecto de respiración cansada")]
-    [Tooltip("Velocidad de oscilación al jadear")]
-    public float breathSpeed = 8f;
-
-    [Tooltip("Amplitud de cambio de escala en Y")]
-    public float breathIntensity = 0.08f;
-
-    [Header("Estado Actual (Inspector)")]
     [SerializeField] private bool holdingHands = false;
     [SerializeField] private bool isTired = false;
+    [SerializeField] private bool isWandering = false;
     [SerializeField] private bool isPlayerInRange = false;
-    [SerializeField] private float currentTimer = 0f;
+    [SerializeField] private float currentTiredTimer = 0f;
+    [SerializeField] private float currentStillTimer = 0f;
 
-    // true = abuelo debe colocarse a la izquierda del jugador, false = a la derecha
     private bool targetSideIsLeft = true;
-
     private Rigidbody2D rb;
     private SpriteRenderer spriteRenderer;
     private Vector3 initialScale;
 
+    private float wanderTimer = 0f;
+    private bool wanderIsWalking = false;
+    private float wanderDirection = 0f;
+
     public bool IsHoldingHands => holdingHands;
     public bool IsTired => isTired;
+    public bool IsWandering => isWandering;
     public bool IsPlayerInRange => isPlayerInRange;
+    public float FollowDistance => followDistance;
+    public float FollowSpeed => followSpeed;
 
     private void Awake()
     {
@@ -62,7 +53,6 @@ public class GrandpaCompanion : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        // El abuelo se renderiza detrás del jugador (sortingOrder 2 frente a 5 del player)
         if (spriteRenderer != null)
         {
             spriteRenderer.sortingOrder = 2;
@@ -80,7 +70,6 @@ public class GrandpaCompanion : MonoBehaviour
             cameraFollow = FindAnyObjectByType<GrandpaCameraFollow>();
         }
 
-        // Ignorar colisiones físicas sólidas con el jugador para poder pasar por delante sin empujar
         IgnorePlayerCollision();
     }
 
@@ -105,23 +94,51 @@ public class GrandpaCompanion : MonoBehaviour
 
     private void Update()
     {
-        // Interacción con tecla E cuando el jugador está dentro del Trigger
         if (isPlayerInRange && CheckInteractInput())
         {
             HandleInteraction();
         }
 
-        // Lógica de cansancio mientras van de la mano
-        if (holdingHands)
+        if (holdingHands && !isTired && !isWandering)
         {
-            currentTimer -= Time.deltaTime;
-            if (currentTimer <= 0f)
+            bool isMoving = player != null && Mathf.Abs(player.HorizontalInput) > 0.05f;
+            if (isMoving)
             {
-                GetTired();
+                currentStillTimer = stillTimeToWander;
+                currentTiredTimer -= Time.deltaTime;
+                if (currentTiredTimer <= 0f)
+                {
+                    GetTired();
+                }
+            }
+            else
+            {
+                currentStillTimer -= Time.deltaTime;
+                if (currentStillTimer <= 0f)
+                {
+                    StartWandering();
+                }
+            }
+        }
+        else if (isWandering && !isTired)
+        {
+            wanderTimer -= Time.deltaTime;
+            if (wanderTimer <= 0f)
+            {
+                wanderIsWalking = !wanderIsWalking;
+                if (wanderIsWalking)
+                {
+                    wanderDirection = Random.value < 0.5f ? -1f : 1f;
+                    wanderTimer = Random.Range(1.2f, 1.8f);
+                }
+                else
+                {
+                    wanderDirection = 0f;
+                    wanderTimer = Random.Range(1.8f, 2.5f);
+                }
             }
         }
 
-        // Efecto visual de jadeo/respiración agitada cuando está cansado
         if (isTired)
         {
             float breath = Mathf.Sin(Time.time * breathSpeed) * breathIntensity;
@@ -131,20 +148,16 @@ public class GrandpaCompanion : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (holdingHands && !isTired && player != null)
+        if (holdingHands && !isTired && !isWandering && player != null)
         {
-            // Determinar de qué lado debe ir el abuelo para estar SIEMPRE detrás del movimiento del jugador
             if (player.HorizontalInput > 0.05f)
             {
-                // Jugador camina a la derecha -> el abuelo debe ir a la izquierda (detrás de él)
                 targetSideIsLeft = true;
             }
             else if (player.HorizontalInput < -0.05f)
             {
-                // Jugador camina a la izquierda -> el abuelo debe ir a la derecha (detrás de él)
                 targetSideIsLeft = false;
             }
-            // Si el jugador está quieto, se mantiene el lado en el que ya estaba colocado
 
             float targetX = targetSideIsLeft
                 ? player.transform.position.x - followDistance
@@ -155,7 +168,6 @@ public class GrandpaCompanion : MonoBehaviour
 
             if (distance > 0.05f)
             {
-                // Si está cruzando al otro lado del jugador o está lejos, aumenta la velocidad para reposicionarse ágilmente
                 float speedMultiplier = distance > followDistance ? 1.6f : 1.0f;
                 float currentFollowSpeed = followSpeed * speedMultiplier;
                 float step = Mathf.Sign(diff) * Mathf.Min(distance * 6f, currentFollowSpeed);
@@ -173,8 +185,29 @@ public class GrandpaCompanion : MonoBehaviour
                     );
                 }
 
-                // Orientar sprite según dirección en la que camina el abuelo
                 if (spriteRenderer != null && Mathf.Abs(step) > 0.05f)
+                {
+                    spriteRenderer.flipX = step < 0;
+                }
+            }
+            else
+            {
+                if (rb != null)
+                {
+                    rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+                }
+            }
+        }
+        else if (isWandering && !isTired)
+        {
+            if (wanderIsWalking && Mathf.Abs(wanderDirection) > 0.05f)
+            {
+                float step = wanderDirection * wanderSpeed;
+                if (rb != null)
+                {
+                    rb.linearVelocity = new Vector2(step, rb.linearVelocity.y);
+                }
+                if (spriteRenderer != null)
                 {
                     spriteRenderer.flipX = step < 0;
                 }
@@ -189,7 +222,6 @@ public class GrandpaCompanion : MonoBehaviour
         }
         else
         {
-            // Quieto si no van de la mano o está cansado
             if (rb != null)
             {
                 rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
@@ -201,13 +233,13 @@ public class GrandpaCompanion : MonoBehaviour
     {
         if (isTired)
         {
-            // El jugador ha vuelto a buscar al abuelo, reinicia el ciclo
             isTired = false;
+            isWandering = false;
             holdingHands = true;
-            transform.localScale = initialScale; // Restaurar escala
-            currentTimer = Random.Range(minTiredTime, maxTiredTime);
+            transform.localScale = initialScale;
+            currentTiredTimer = Random.Range(minTiredTime, maxTiredTime);
+            currentStillTimer = stillTimeToWander;
 
-            // Determinar lado inicial según la posición actual respecto al jugador
             if (player != null)
             {
                 targetSideIsLeft = transform.position.x < player.transform.position.x;
@@ -218,61 +250,69 @@ public class GrandpaCompanion : MonoBehaviour
             {
                 cameraFollow.OnHandsResumed();
             }
-
-            Debug.Log("[GrandpaCompanion] ¡El abuelo descansó y vuelve a tomar la mano del jugador!");
         }
-        else
+        else if (isWandering)
         {
-            // Alternar de la mano / soltar manualmente
-            holdingHands = !holdingHands;
+            isWandering = false;
+            holdingHands = true;
+            currentTiredTimer = Random.Range(minTiredTime, maxTiredTime);
+            currentStillTimer = stillTimeToWander;
 
             if (player != null)
             {
-                player.SetHoldingHands(holdingHands);
-            }
-
-            if (holdingHands)
-            {
-                // Al tomar la mano, mantén inicialmente el lado relativo en el que ya está
-                if (player != null)
-                {
-                    targetSideIsLeft = transform.position.x < player.transform.position.x;
-                }
-
-                currentTimer = Random.Range(minTiredTime, maxTiredTime);
-                Debug.Log($"[GrandpaCompanion] Van de la mano. Tiempo hasta cansancio: {currentTimer:F1}s");
-            }
-            else
-            {
-                Debug.Log("[GrandpaCompanion] Mano soltada manualmente.");
+                targetSideIsLeft = transform.position.x < player.transform.position.x;
+                player.SetHoldingHands(true);
             }
         }
+        else if (!holdingHands)
+        {
+            holdingHands = true;
+            currentTiredTimer = Random.Range(minTiredTime, maxTiredTime);
+            currentStillTimer = stillTimeToWander;
+
+            if (player != null)
+            {
+                targetSideIsLeft = transform.position.x < player.transform.position.x;
+                player.SetHoldingHands(true);
+            }
+        }
+    }
+
+    private void StartWandering()
+    {
+        holdingHands = false;
+        isWandering = true;
+
+        if (player != null)
+        {
+            player.SetHoldingHands(false);
+        }
+
+        wanderIsWalking = true;
+        wanderDirection = Random.value < 0.5f ? -1f : 1f;
+        wanderTimer = Random.Range(1.2f, 1.8f);
     }
 
     private void GetTired()
     {
         isTired = true;
         holdingHands = false;
+        isWandering = false;
 
-        // Jugador recupera velocidad normal
         if (player != null)
         {
             player.SetHoldingHands(false);
         }
 
-        // El abuelo frena en el sitio
         if (rb != null)
         {
             rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
         }
 
-        // Avisa a la cámara para que deje de seguir al jugador y pase a enfocar al abuelo
         if (cameraFollow != null)
         {
             cameraFollow.OnGrandpaTired();
         }
-
-        Debug.Log("[GrandpaCompanion] ¡El abuelo se ha cansado! Suelta la mano y se detiene.");
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -300,31 +340,15 @@ public class GrandpaCompanion : MonoBehaviour
 
     private bool CheckInteractInput()
     {
-        bool pressed = false;
-
-#if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
         {
-            pressed = true;
+            return true;
         }
-#endif
-
-#if ENABLE_LEGACY_INPUT_MANAGER
-        if (!pressed)
+        if (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame)
         {
-            try
-            {
-                if (Input.GetKeyDown(KeyCode.E))
-                    pressed = true;
-            }
-            catch
-            {
-                // Fallback silencioso
-            }
+            return true;
         }
-#endif
-
-        return pressed;
+        return false;
     }
 
     private void OnGUI()
@@ -335,20 +359,28 @@ public class GrandpaCompanion : MonoBehaviour
         style.alignment = TextAnchor.MiddleLeft;
 
         string statusText = isTired
-            ? "<color=#FFA500><b>Abuelo: Cansado</b></color> (La cámara lo enfoca solo a él. Vuelve a su lado y pulsa E)"
-            : (holdingHands
-                ? $"<color=#00FF7F><b>De la mano</b></color> (Cansancio en {currentTimer:F1}s)"
-                : "<color=#D3D3D3>Abuelo: Esperando</color>");
+            ? "<color=#FFA500><b>Abuelo: Cansado</b></color> (Cámara fija. Vuelve a su lado y pulsa E)"
+            : (isWandering
+                ? "<color=#FF69B4><b>Abuelo: Desorientado</b></color> (Te detuviste y se soltó a caminar solo)"
+                : (holdingHands
+                    ? $"<color=#00FF7F><b>De la mano</b></color> (No te detengas - Cansancio en {currentTiredTimer:F1}s)"
+                    : "<color=#D3D3D3>Abuelo: Esperando</color>"));
 
         if (isPlayerInRange)
         {
             string actionText = isTired
                 ? "Pulsa [E] para descansar y volver a darle la mano"
-                : (holdingHands ? "Pulsa [E] para soltar su mano" : "Pulsa [E] para darle la mano");
-            statusText += $"\n<color=#FFFF00><b>{actionText}</b></color>";
+                : (isWandering || !holdingHands
+                    ? "Pulsa [E] para darle la mano"
+                    : "");
+
+            if (!string.IsNullOrEmpty(actionText))
+            {
+                statusText += $"\n<color=#FFFF00><b>{actionText}</b></color>";
+            }
         }
 
-        int height = isPlayerInRange ? 55 : 35;
+        int height = isPlayerInRange && (!holdingHands || isTired || isWandering) ? 55 : 35;
         GUI.Box(new Rect(15, 15, 520, height), statusText, style);
     }
 }

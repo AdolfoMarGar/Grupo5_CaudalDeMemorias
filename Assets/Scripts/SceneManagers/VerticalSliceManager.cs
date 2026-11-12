@@ -25,10 +25,10 @@ public class VerticalSliceManager : GameplayManager
             canvas.gameObject.SetActive(false);
     }
 
-    public override void ManejarObjetoClickeado(Interactable objetoClickeado)
+    public override void ManejarInteractable(Interactable objetoClickeado)
     {
         //necesario en caso de que se quiera mantener la funcionalidad de la clase base, pero en este caso no es necesario
-        //base.ManejarObjetoClickeado(objetoClickeado);
+        //base.ManejarInteractable(objetoClickeado);
 
         Debug.Log("Objeto clickeado: " + objetoClickeado.name);
         if (objetoClickeado == npcs[0])

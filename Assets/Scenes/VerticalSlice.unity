@@ -2996,7 +2996,6 @@ MonoBehaviour:
   texts:
   - Yeyyy conseguiste salir
   selectedText: 0
-  targetScene: GrandpaSide2D
 --- !u!61 &1343747704
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -3277,6 +3276,7 @@ GameObject:
   - component: {fileID: 1443510057}
   - component: {fileID: 1443510059}
   - component: {fileID: 1443510060}
+  - component: {fileID: 1443510061}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -3372,10 +3372,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 5
-  topPosition: {fileID: 955174020}
-  bottomPosition: {fileID: 1333812725}
-  maxScale: 3
-  minScale: 1
+  animator: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  autoFlipX: 1
+  depthScaling: {fileID: 1443510061}
 --- !u!50 &1443510057
 Rigidbody2D:
   serializedVersion: 5
@@ -3477,13 +3477,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::VerticalSliceManager
   scenarios:
   - {fileID: 295044733}
-  npcs: []
-  sceneObjects: []
-  exits: []
   textScreen: {fileID: 1443510059}
   canvas: {fileID: 550133398}
+  closeUps: []
+  cameras: []
+  playerMovementScript: {fileID: 0}
+  topPositions: []
+  bottomPositions: []
   "se\xF1orino": {fileID: 1090770892}
   "se\xF1orino2": {fileID: 326380024}
+--- !u!114 &1443510061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1443510053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8f3cf03610791ff4687d3a9d492c13a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerDepthScaling
+  topPosition: {fileID: 955174020}
+  bottomPosition: {fileID: 1333812725}
+  maxScale: 3
+  minScale: 1
 --- !u!1 &1446827880
 GameObject:
   m_ObjectHideFlags: 0
