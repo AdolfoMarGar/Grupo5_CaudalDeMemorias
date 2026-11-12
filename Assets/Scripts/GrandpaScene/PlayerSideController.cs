@@ -1,22 +1,13 @@
 using UnityEngine;
-#if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem;
-#endif
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class PlayerSideController : MonoBehaviour
 {
-    [Header("Velocidades")]
-    [Tooltip("Velocidad normal cuando camina solo")]
-    public float normalSpeed = 5f;
-
-    [Tooltip("Velocidad reducida cuando lleva al abuelo de la mano")]
-    public float reducedSpeed = 2.5f;
-
-    [Header("Estado")]
+    [SerializeField] private float normalSpeed = 5f;
+    [SerializeField] private float reducedSpeed = 2.5f;
     [SerializeField] private bool isHoldingHands = false;
 
-    // Límites de cámara cuando el abuelo está cansado
     private bool hasCameraBounds = false;
     private float minCameraX;
     private float maxCameraX;
@@ -32,6 +23,8 @@ public class PlayerSideController : MonoBehaviour
     }
 
     public float CurrentSpeed => isHoldingHands ? reducedSpeed : normalSpeed;
+    public float NormalSpeed => normalSpeed;
+    public float ReducedSpeed => reducedSpeed;
     public float HorizontalInput => horizontalInput;
     public bool FacingRight { get; private set; } = true;
 
@@ -45,7 +38,6 @@ public class PlayerSideController : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
         }
 
-        // Asegurar orden de renderizado por delante de otros personajes
         if (spriteRenderer != null)
         {
             spriteRenderer.sortingOrder = 5;
@@ -54,7 +46,6 @@ public class PlayerSideController : MonoBehaviour
 
     private void Start()
     {
-        // Ignorar colisiones físicas sólidas con el abuelo para poder pasar por delante de él
         var grandpa = FindAnyObjectByType<GrandpaCompanion>();
         if (grandpa != null)
         {
@@ -90,7 +81,6 @@ public class PlayerSideController : MonoBehaviour
     {
         horizontalInput = ReadHorizontalInput();
 
-        // Orientación del sprite según dirección de movimiento
         if (horizontalInput > 0.05f)
         {
             FacingRight = true;
@@ -102,7 +92,6 @@ public class PlayerSideController : MonoBehaviour
             if (spriteRenderer != null) spriteRenderer.flipX = true;
         }
 
-        // Si los límites de cámara están activos, clampear posición
         if (hasCameraBounds)
         {
             float currentX = transform.position.x;
@@ -118,7 +107,6 @@ public class PlayerSideController : MonoBehaviour
     {
         float targetVelocityX = horizontalInput * CurrentSpeed;
 
-        // Impedir que el jugador empuje hacia fuera de los bordes de la cámara cuando está activo el límite
         if (hasCameraBounds)
         {
             if (transform.position.x <= minCameraX && targetVelocityX < 0f)
@@ -150,7 +138,6 @@ public class PlayerSideController : MonoBehaviour
     {
         float input = 0f;
 
-#if ENABLE_INPUT_SYSTEM
         if (Keyboard.current != null)
         {
             if (Keyboard.current.aKey.isPressed || Keyboard.current.leftArrowKey.isPressed)
@@ -158,21 +145,15 @@ public class PlayerSideController : MonoBehaviour
             if (Keyboard.current.dKey.isPressed || Keyboard.current.rightArrowKey.isPressed)
                 input += 1f;
         }
-#endif
 
-#if ENABLE_LEGACY_INPUT_MANAGER
-        if (Mathf.Approximately(input, 0f))
+        if (Gamepad.current != null)
         {
-            try
+            float stickX = Gamepad.current.leftStick.x.ReadValue();
+            if (Mathf.Abs(stickX) > 0.15f)
             {
-                input = Input.GetAxisRaw("Horizontal");
-            }
-            catch
-            {
-                // Esto es un fallback Fallback silencioso
+                input = stickX;
             }
         }
-#endif
 
         return Mathf.Clamp(input, -1f, 1f);
     }

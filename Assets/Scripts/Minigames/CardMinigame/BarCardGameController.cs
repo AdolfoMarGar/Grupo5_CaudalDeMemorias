@@ -5,54 +5,58 @@ using TMPro;
 
 public class BarCardGameController : MonoBehaviour
 {
-    [Header("Configuración Económica")]
-    [Tooltip("Monedas actuales del jugador")]
-    public int playerCoins = 100;
+    [SerializeField] private int playerCoins = 100;
+    [SerializeField] private int initialBet = 10;
+    [SerializeField] private int currentPot = 0;
+    [SerializeField] private int currentCard = 1;
+    [SerializeField] private string currentSuit = "OROS";
 
-    [Tooltip("Apuesta inicial por cada mano")]
-    public int initialBet = 10;
+    [SerializeField] private TextMeshProUGUI coinsText;
+    [SerializeField] private TextMeshProUGUI potText;
+    [SerializeField] private TextMeshProUGUI dialogueText;
+    [SerializeField] private TextMeshProUGUI cardValueText;
+    [SerializeField] private TextMeshProUGUI cardSuitText;
+    [SerializeField] private TextMeshProUGUI cardCornerTopText;
+    [SerializeField] private TextMeshProUGUI cardCornerBottomText;
+    [SerializeField] private RectTransform cardTransform;
+    [SerializeField] private Image cardImage;
 
-    [Tooltip("Bote acumulado en la racha actual")]
-    public int currentPot = 0;
-
-    [Header("Estado de la Baraja")]
-    [Tooltip("Valor de la carta actual en mesa (1 al 12)")]
-    public int currentCard = 1;
-    public string currentSuit = "OROS";
-
-    [Header("Referencias UI")]
-    public TextMeshProUGUI coinsText;
-    public TextMeshProUGUI potText;
-    public TextMeshProUGUI dialogueText;
-    public TextMeshProUGUI cardValueText;
-    public TextMeshProUGUI cardSuitText;
-    public TextMeshProUGUI cardCornerTopText;
-    public TextMeshProUGUI cardCornerBottomText;
-    public RectTransform cardTransform;
-    public Image cardImage;
-
-    [Header("Botones")]
-    public Button buttonHigher;
-    public Button buttonLower;
-    public Button buttonCashOut;
-    public Button buttonNewHand;
+    [SerializeField] private Button buttonHigher;
+    [SerializeField] private Button buttonLower;
+    [SerializeField] private Button buttonCashOut;
+    [SerializeField] private Button buttonNewHand;
+    [SerializeField] private Button buttonExit;
 
     private bool isRoundActive = false;
     private bool isAnimating = false;
+    private bool exitRequested = false;
 
     private readonly string[] suits = { "OROS", "COPAS", "ESPADAS", "BASTOS" };
     private readonly string[] suitSymbols = { "[O]", "[C]", "[E]", "[B]" };
     private readonly Color[] suitColors = {
-        new Color(0.88f, 0.68f, 0.08f), // Oros (dorado)
-        new Color(0.85f, 0.22f, 0.22f), // Copas (rojo)
-        new Color(0.22f, 0.48f, 0.88f), // Espadas (azul acero)
-        new Color(0.22f, 0.65f, 0.25f)  // Bastos (verde madera)
+        new Color(0.88f, 0.68f, 0.08f),
+        new Color(0.85f, 0.22f, 0.22f),
+        new Color(0.22f, 0.48f, 0.88f),
+        new Color(0.22f, 0.65f, 0.25f)
     };
     private int currentSuitIndex = 0;
 
+    public int PlayerCoins
+    {
+        get => playerCoins;
+        set => playerCoins = value;
+    }
+
+    public int CurrentPot => currentPot;
+    public bool ExitRequested => exitRequested;
+    public Button ButtonExit
+    {
+        get => buttonExit;
+        set => buttonExit = value;
+    }
+
     private void Start()
     {
-        // Conectar eventos onClick en Start() para que funcione al instante
         if (buttonHigher != null)
         {
             buttonHigher.onClick.RemoveAllListeners();
@@ -77,27 +81,39 @@ public class BarCardGameController : MonoBehaviour
             buttonNewHand.onClick.AddListener(StartNewRound);
         }
 
-        // Iniciar la ronda inicial al darle a Play
+        if (buttonExit != null)
+        {
+            buttonExit.onClick.RemoveAllListeners();
+            buttonExit.onClick.AddListener(RequestExit);
+        }
+
         StartNewRound();
+    }
+
+    public void RequestExit()
+    {
+        exitRequested = true;
+        isRoundActive = false;
+        isAnimating = false;
+        StopAllCoroutines();
     }
 
     public void StartNewRound()
     {
         if (isAnimating) return;
 
-        // Cortesía del tabernero si te quedas sin monedas
+        exitRequested = false;
+
         if (playerCoins < initialBet)
         {
             playerCoins = 50;
             SetDialogue("¡Te quedaste sin blanca! Toma 50 monedas cortesía de la casa.");
         }
 
-        // Deducir apuesta inicial y fijar el bote inicial
         playerCoins -= initialBet;
         currentPot = initialBet;
         isRoundActive = true;
 
-        // Sacar carta aleatoria (1-12)
         currentCard = Random.Range(1, 13);
         currentSuitIndex = Random.Range(0, suits.Length);
         currentSuit = suits[currentSuitIndex];
@@ -124,7 +140,6 @@ public class BarCardGameController : MonoBehaviour
 
         SetDialogue("El tabernero voltea la siguiente carta...");
 
-        // Efecto giro escala X de 1 a 0 en 0.15s
         float elapsed = 0f;
         float halfDuration = 0.15f;
         Vector3 originalScale = cardTransform != null ? cardTransform.localScale : Vector3.one;
@@ -140,14 +155,12 @@ public class BarCardGameController : MonoBehaviour
             yield return null;
         }
 
-        //  Revelar la nueva carta
         int nextCard = Random.Range(1, 13);
         int nextSuitIndex = Random.Range(0, suits.Length);
         string nextSuit = suits[nextSuitIndex];
 
         UpdateCardVisual(nextCard, nextSuitIndex);
 
-        //  Efecto giro escala X de 0 a 1 en 0.15s
         elapsed = 0f;
         while (elapsed < halfDuration)
         {
@@ -165,13 +178,11 @@ public class BarCardGameController : MonoBehaviour
             cardTransform.localScale = originalScale;
         }
 
-        // Evalua la condición de victoria o derrota
         bool isCorrect = (guessHigher && nextCard > currentCard) || (!guessHigher && nextCard < currentCard);
         bool isEqual = (nextCard == currentCard);
 
         if (isCorrect)
         {
-            // El bote se duplica, 10,20,40,80 etc
             currentPot *= 2;
             currentCard = nextCard;
             currentSuitIndex = nextSuitIndex;

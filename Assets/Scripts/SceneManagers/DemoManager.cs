@@ -105,26 +105,30 @@ public class DemoManager : GameplayManager
     }
     private IEnumerator EjecutarMinijuegoCartas(Interactable objetoClickeado)
     {
-        playerMovementScript.puedeMoverse = false;
+        playerMovementScript.canMove = false;
         playerInteractableScript.puedeInteractuar = false;
         canvaCard.gameObject.SetActive(true);
         interactuable = false;
 
+        if (cardScript != null)
+        {
+            cardScript.StartNewRound();
+        }
 
-        yield return new WaitUntil(() => cardScript.playerCoins<=70 || cardScript.playerCoins>=130);
+        yield return new WaitUntil(() => cardScript.ExitRequested || cardScript.PlayerCoins <= 70 || cardScript.PlayerCoins >= 130);
 
         canvaCard.gameObject.SetActive(false);
 
 
         // Reactivar la interacción general
         interactuable = true;
-        playerMovementScript.puedeMoverse = true;
+        playerMovementScript.canMove = true;
         playerInteractableScript.puedeInteractuar = true;
     }
 
     private IEnumerator EjecutarMinijuegoArbol(Interactable objetoClickeado)
     {
-        playerMovementScript.puedeMoverse = false;
+        playerMovementScript.canMove = false;
         playerInteractableScript.puedeInteractuar = false;
         treeMinigame.gameObject.SetActive(true);
         cameras[3].Priority.Value = 2;
@@ -142,13 +146,64 @@ public class DemoManager : GameplayManager
 
         // Reactivar la interacción general
         interactuable = true;
-        playerMovementScript.puedeMoverse = true;
+        playerMovementScript.canMove = true;
         playerInteractableScript.puedeInteractuar = true;
     }
-    
+
+    private void UpdatePlayerDepthLimitsForCamera(Unity.Cinemachine.CinemachineCamera cam, int camIndex)
+    {
+        if (playerMovementScript == null) return;
+
+        Transform top = null;
+        Transform bot = null;
+
+        if (cam != null)
+        {
+            top = cam.transform.Find("TopLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("TopLimit") : null);
+            bot = cam.transform.Find("BotLimit") ?? (cam.transform.parent != null ? cam.transform.parent.Find("BotLimit") : null);
+
+            if (top == null || bot == null)
+            {
+                var parent = cam.transform.parent;
+                if (parent != null)
+                {
+                    for (int i = 0; i < parent.childCount; i++)
+                    {
+                        var child = parent.GetChild(i);
+                        if (child.name.StartsWith("TopLimit")) top = child;
+                        if (child.name.StartsWith("BotLimit")) bot = child;
+                    }
+                }
+            }
+        }
+
+        if (top != null && bot != null)
+        {
+            playerMovementScript.SetLimitsPosition(top, bot);
+            return;
+        }
+
+        if (topPositions != null && bottomPositions != null && topPositions.Count > 0)
+        {
+            int safeIndex = Mathf.Clamp(camIndex, 0, topPositions.Count - 1);
+            if (safeIndex < bottomPositions.Count && topPositions[safeIndex] != null && bottomPositions[safeIndex] != null)
+            {
+                playerMovementScript.SetLimitsPosition(topPositions[safeIndex], bottomPositions[safeIndex]);
+                return;
+            }
+        }
+
+        if (cam != null)
+        {
+            float ortho = cam.Lens.OrthographicSize;
+            float camY = cam.transform.position.y;
+            playerMovementScript.SetLimits(camY + (ortho * 0.7f), camY - (ortho * 0.9f));
+        }
+    }
+
     private IEnumerator ActivarNpcPuente(Interactable objetoClickeado)
     {
-        playerMovementScript.puedeMoverse = false;
+        playerMovementScript.canMove = false;
         playerInteractableScript.puedeInteractuar = false;
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         bool dialogosTerminados = false;
@@ -172,7 +227,7 @@ public class DemoManager : GameplayManager
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
         Debug.Log("textoSeleccionado: " + objetoClickeado.GetSelectedText());
         interactuable = true;
-        playerMovementScript.puedeMoverse = true;
+        playerMovementScript.canMove = true;
         playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {
@@ -183,7 +238,7 @@ public class DemoManager : GameplayManager
 
     private IEnumerator textObjectScene(Interactable objetoClickeado)
     {
-        playerMovementScript.puedeMoverse = false;
+        playerMovementScript.canMove = false;
         playerInteractableScript.puedeInteractuar = false;
         int id = objetoClickeado.GetId() - 1;
         Debug.Log("ObjectScene: " + objetoClickeado.name);
@@ -207,7 +262,7 @@ public class DemoManager : GameplayManager
 
         canvas.gameObject.SetActive(false);
         interactuable = true;
-        playerMovementScript.puedeMoverse = true;
+        playerMovementScript.canMove = true;
         playerInteractableScript.puedeInteractuar = true;
         void TerminoElTexto()
         {

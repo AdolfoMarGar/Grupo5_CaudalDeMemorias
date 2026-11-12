@@ -9,7 +9,7 @@ public class Pueblo : GameplayManager
     {
         Debug.Log("Iniciando Pueblo");
         base.Start();
-        playerMovementScript.puedeMoverse = true;
+        playerMovementScript.canMove = true;
         playerInteractableScript.puedeInteractuar = true;
     }
 
