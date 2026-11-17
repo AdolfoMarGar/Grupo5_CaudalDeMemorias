@@ -107,7 +107,6 @@ public class Interactable : MonoBehaviour
     {
         //Debug.Log("Interactuando con objeto genérico ID : " + id);
         OnClicked?.Invoke(this);
-        // si estaba administrando desde un script externo, como puedo seguir haciendolo desde ahi? te paso un ejemplo.
     }
 
 }

@@ -116,26 +116,30 @@ public class TreeMinigame : MonoBehaviour
             //Debug.Log("Se hizo clic en un DirtSpots: " + objetoClickeado.name);
             dirtCount--;
         }
-        else if (objetoClickeado is Glyphs)
+        else if (objetoClickeado is Glyphs glyphClickeado)
         {
-            Debug.Log("Se hizo clic en un Glyphs: " + objetoClickeado.name);
-
-            if (objetoClickeado.GetId() == idsAleatorios[glyphPosition])
+            Debug.Log("Se hizo clic en un Glyphs: " + glyphClickeado.name);
+            if (glyphClickeado.IsGlowing())
+                return;
+            if (glyphClickeado.GetId() == idsAleatorios[glyphPosition])
             {
                 glyphPosition++;
-                glyphs[objetoClickeado.GetId() - 1].GlowGlyph();
+                glyphClickeado.GlowGlyph();
             }
             else
             {
                 Debug.Log("Glyph incorrecto. Reiniciando secuencia.");
+                
                 glyphPosition = 0;
                 foreach (var glyph in glyphs)
                 {
                     if (glyph.IsGlowing() == true)
                     {
                         glyph.GlowGlyph();
+                        glyph.FlashRed(0.3f);
                     }
                 }
+                glyphClickeado.FlashRed(0.3f);
             }
         }
         Debug.Log("Contadores actuales - TreeCount: " + treeCount + ", DirtCount: " + dirtCount);
@@ -202,26 +206,29 @@ public class TreeMinigame : MonoBehaviour
         if (glyphsActivated && glyphPosition >= glyphs.Count && !ended)
         {
             Debug.Log("Secuencia de Glyphs completada. Minijuego del árbol finalizado.");
-            // Aquí puedes agregar la lógica para finalizar el minijuego, como mostrar un mensaje o activar algún evento.
             ended = true;
         }
     }
 
+
     private IEnumerator RutinaAlternarEstado()
     {
+        foreach (var glyph in glyphs)
+        {
+            if (glyph != null) glyph.EnableBoxCollider2D(false);
+        }
+
         int cont = 0;
         for (int i = 0; i < glyphs.Count; i++)
         {
-            // Espera exactamente los segundos indicados
             glyphs[cont].GlowGlyph();
             if (cont > 0)
                 glyphs[cont - 1].GlowGlyph();
             yield return new WaitForSeconds(0.5f);
             cont++;
-
-
         }
         glyphs[glyphs.Count - 1].GlowGlyph();
+
         foreach (var glyph in glyphs)
         {
             if (glyph != null)

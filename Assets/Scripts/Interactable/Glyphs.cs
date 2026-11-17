@@ -1,6 +1,7 @@
+using System.Collections;
 using UnityEngine;
 
-public class Glyphs : Interactable
+public class Glyphs : TreeInteractable
 {
     private bool glowing = false; // Variable para controlar si el glifo está brillando
     public override void Interact()
@@ -27,6 +28,26 @@ public class Glyphs : Interactable
             {
                 sr.color = defaultColor; // Se apaga (color original)
             }
+        }
+    }
+    public void FlashRed(float duracion = 0.3f)
+    {
+        StartCoroutine(RutinaParpadeoRojo(duracion));
+    }
+
+    private IEnumerator RutinaParpadeoRojo(float duracion)
+    {
+        SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        if (sr == null) sr = GetComponentInChildren<SpriteRenderer>();
+
+        if (sr != null)
+        {
+            Color colorPrevio = sr.color; // Guardamos el color que tenía justo antes del fallo
+            sr.color = Color.red;
+
+            yield return new WaitForSeconds(duracion);
+
+            sr.color = colorPrevio; // Restauramos su color original
         }
     }
     public bool IsGlowing()
