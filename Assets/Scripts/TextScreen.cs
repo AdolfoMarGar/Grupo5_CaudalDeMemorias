@@ -12,6 +12,9 @@ public class TextScreen : MonoBehaviour
     [SerializeField] private Image imageText;
     public event Action OnDialogosTerminados;
 
+    private Coroutine rutinaActual;
+    private bool estaMostrando = false;
+
     void Start()
     {
         if (textoUI == null)
@@ -24,14 +27,25 @@ public class TextScreen : MonoBehaviour
 
     public void MostrarDialogos(List<string> texts, int selectedText, int endText)
     {
+        if (estaMostrando) return;
+
         if (textoUI == null || texts == null || texts.Count == 0) return;
-        Debug.Log("Mostrando textos desde el índice " + selectedText + " hasta " + endText);
-        StartCoroutine(RutinaMostrarTextos(texts, selectedText, endText));
+
+        if (selectedText < 0 || endText >= texts.Count || selectedText > endText)
+        {
+            Debug.LogWarning($"Índices inválidos en MostrarDialogos: selectedText={selectedText}, endText={endText}, total={texts.Count}");
+            return;
+        }
+
+        Debug.Log($"Mostrando textos desde el índice {selectedText} hasta {endText}");
+        rutinaActual = StartCoroutine(RutinaMostrarTextos(texts, selectedText, endText));
     }
 
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
+        estaMostrando = true;
         yield return null;
+
         textoUI.enabled = true;
         imageText.enabled = true;
 
@@ -44,12 +58,13 @@ public class TextScreen : MonoBehaviour
             yield return null;
 
             yield return EsperarAQuePresioneClick();
-
             yield return EsperarAQueSuelteClick();
         }
+
         textoUI.text = "";
         textoUI.enabled = false;
         imageText.enabled = false;
+        estaMostrando = false;
 
         OnDialogosTerminados?.Invoke();
     }

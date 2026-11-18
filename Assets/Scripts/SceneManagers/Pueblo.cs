@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,7 +20,9 @@ public class Pueblo : GameplayManager
 
 
         Debug.Log("Manejando interactuable: " + objetoClickeado.name);
-
+        if(objetoClickeado is Npcs npc){
+            StartCoroutine(TextoNpc(npc));
+        }
         
         if (objetoClickeado is Exits)
         {
@@ -102,6 +105,40 @@ public class Pueblo : GameplayManager
 
         }
 
+
+    }
+    private IEnumerator TextoNpc(Npcs npc)
+    {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
+        Debug.Log("textoSeleccionado: " + npc.GetSelectedText());
+        bool dialogosTerminados = false;
+
+        // Nos suscribimos temporalmente al evento de que el texto terminó
+        textScreen.OnDialogosTerminados += TerminoElTexto;
+        canvas.gameObject.SetActive(true);
+        closeUps[npc.GetId() - 1].gameObject.SetActive(true);
+
+        // Mostramos los diálogos
+        textScreen.MostrarDialogos(npc.GetTexts(), 0, npc.GetTexts().Count - 1);
+
+        // Pausamos la ejecución de este código hasta que el evento devuelva true
+        yield return new WaitUntil(() => dialogosTerminados);
+
+        // Desuscribimos el evento para evitar bugs
+        textScreen.OnDialogosTerminados -= TerminoElTexto;
+        closeUps[npc.GetId() - 1].gameObject.SetActive(false);
+        canvas.gameObject.SetActive(false);
+
+        // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
+        Debug.Log("textoSeleccionado: " + npc.GetSelectedText());
+        interactuable = true;
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
+        void TerminoElTexto()
+        {
+            dialogosTerminados = true;
+        }
 
     }
 }
