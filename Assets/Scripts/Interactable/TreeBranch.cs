@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TreeBranch : Interactable
+public class TreeBranch : TreeInteractable
 {
     public override void Interact()
     {

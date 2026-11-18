@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class DirtSpots : Interactable
+public class DirtSpots : TreeInteractable
 {
     public override void Interact()
     {
