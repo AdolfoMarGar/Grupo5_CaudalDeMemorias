@@ -37,18 +37,18 @@ public class TextScreen : MonoBehaviour
             return;
         }
 
-        Debug.Log($"Mostrando textos desde el índice {selectedText} hasta {endText}");
+        estaMostrando = true;
+        textoUI.text = texts[selectedText];
+        textoUI.enabled = true;
+        imageText.enabled = true;
+
         rutinaActual = StartCoroutine(RutinaMostrarTextos(texts, selectedText, endText));
     }
 
     IEnumerator RutinaMostrarTextos(List<string> texts, int selectedText, int endText)
     {
-        estaMostrando = true;
+       
         yield return null;
-
-        textoUI.enabled = true;
-        imageText.enabled = true;
-
         yield return EsperarAQueSuelteClick();
 
         for (int i = selectedText; i <= endText; i++)
