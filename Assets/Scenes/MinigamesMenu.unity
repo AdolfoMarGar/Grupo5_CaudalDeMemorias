@@ -313,7 +313,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: DISPONIBLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -323,7 +323,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4283190463
-  m_fontColor: {r: 0.75, g: 0.3, b: 0.3, a: 1}
+  m_fontColor: {r: 0.85, g: 0.75, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -450,7 +450,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Minijuego en desarrollo. Pr\xF3ximamente disponible..."
+  m_text: TEXTO DE EJEMPLO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a047348e4d2553748b88c663a6fd0f96, type: 2}
   m_sharedMaterial: {fileID: -6231816607480219154, guid: a047348e4d2553748b88c663a6fd0f96, type: 2}
@@ -724,7 +724,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEXTO DE EJEMPLO
+  m_text: Dados de bar
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -2175,7 +2175,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: JUGAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -2616,7 +2616,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEXTO DE EJEMPLO
+  m_text: Aljibe 1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -3022,31 +3022,30 @@ MonoBehaviour:
     sceneName: MinijuegoArbol
     thumbnail: {fileID: 21300000, guid: 1db82d42887ad404192d920ed4ae374c, type: 3}
     isUnlocked: 0
-  - id: well_secrets
-    title: TEXTO DE EJEMPLO
+  - id: aljibe_1
+    title: Aljibe 1
     description: TEXTO DE EJEMPLO
-    sceneName: 
+    sceneName: AljibePinballMinigame
     thumbnail: {fileID: 21300000, guid: 81191eca7c720a340ac3717c988d6990, type: 3}
-    isUnlocked: 0
-  - id: church_bells
-    title: TEXTO DE EJEMPLO
+    isUnlocked: 1
+  - id: aljibe_2
+    title: Aljibe 2
     description: TEXTO DE EJEMPLO
-    sceneName: 
+    sceneName: AljibeBucketMinigame
     thumbnail: {fileID: 21300000, guid: 52963d17068d8244ba9bca90fd646da2, type: 3}
-    isUnlocked: 0
+    isUnlocked: 1
   - id: bar_dice
-    title: Dados de la Taberna
-    description: "Duelo cl\xE1sico de dados de mayor o menor contra el tabernero.
-      Apuesta tus monedas y arriesga el bote."
+    title: Dados de bar
+    description: TEXTO DE EJEMPLO
     sceneName: BarDiceMinigame
     thumbnail: {fileID: 0}
-    isUnlocked: 0
-  - id: Test1
-    title: TEXTO DE EJEMPLO
-    description: "Minijuego en desarrollo. Pr\xF3ximamente disponible..."
-    sceneName: 
+    isUnlocked: 1
+  - id: aljibe_3
+    title: Pesca en el pozo
+    description: TEXTO DE EJEMPLO
+    sceneName: AljibeFishingMinigame
     thumbnail: {fileID: 0}
-    isUnlocked: 0
+    isUnlocked: 1
   - id: Test2
     title: TEXTO DE EJEMPLO
     description: "Minijuego en desarrollo. Pr\xF3ximamente disponible..."
@@ -3327,7 +3326,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 516254166}
   m_OnClick:
     m_PersistentCalls:
@@ -3792,7 +3791,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: JUGAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -4485,7 +4484,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 666157117}
   m_OnClick:
     m_PersistentCalls:
@@ -4925,7 +4924,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &739345626
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5254,7 +5253,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: JUGAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -5528,7 +5527,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: DISPONIBLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -5538,7 +5537,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4283190463
-  m_fontColor: {r: 0.75, g: 0.3, b: 0.3, a: 1}
+  m_fontColor: {r: 0.85, g: 0.75, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -5877,7 +5876,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Minijuego en desarrollo. Pr\xF3ximamente disponible..."
+  m_text: TEXTO DE EJEMPLO
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: a047348e4d2553748b88c663a6fd0f96, type: 2}
   m_sharedMaterial: {fileID: -6231816607480219154, guid: a047348e4d2553748b88c663a6fd0f96, type: 2}
@@ -6584,7 +6583,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: DISPONIBLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -6594,7 +6593,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4283190463
-  m_fontColor: {r: 0.75, g: 0.3, b: 0.3, a: 1}
+  m_fontColor: {r: 0.85, g: 0.75, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7086,7 +7085,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: DISPONIBLE
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -7096,7 +7095,7 @@ MonoBehaviour:
   m_fontColor32:
     serializedVersion: 2
     rgba: 4283190463
-  m_fontColor: {r: 0.75, g: 0.3, b: 0.3, a: 1}
+  m_fontColor: {r: 0.85, g: 0.75, b: 0.35, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -7688,7 +7687,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1324119130}
   m_OnClick:
     m_PersistentCalls:
@@ -7946,7 +7945,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 1344934578}
   m_OnClick:
     m_PersistentCalls:
@@ -9045,7 +9044,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1527160451
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9480,7 +9479,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEXTO DE EJEMPLO
+  m_text: Pesca en el pozo
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -9577,7 +9576,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1713963157
 RectTransform:
   m_ObjectHideFlags: 0
@@ -9881,7 +9880,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: TEXTO DE EJEMPLO
+  m_text: Aljibe 2
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -10596,7 +10595,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: BLOQUEADO
+  m_text: JUGAR
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
   m_sharedMaterial: {fileID: -7028297388143769059, guid: 3011ae62cf4d325459fa596a59f5c6b2, type: 2}
@@ -11121,7 +11120,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2052576135
 RectTransform:
   m_ObjectHideFlags: 0

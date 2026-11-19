@@ -75,6 +75,20 @@ public class GameplayManager : MonoBehaviour
         {
             Debug.LogError("¡No se encontró PlayerInteractable en la escena!");
         }
+        if (closeUps != null && closeUps.Count > 0)
+        {
+            foreach (var closeUp in closeUps)
+            {
+                if (closeUp != null)
+                {
+                    closeUp.gameObject.SetActive(false);
+                }
+            }
+        }
+        else
+        {
+            Debug.LogError("¡No se encontraron CloseUps en la escena!");
+        }
 
         RegistrarInteractables();
     }
