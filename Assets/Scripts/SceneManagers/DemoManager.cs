@@ -33,7 +33,7 @@ public class DemoManager : GameplayManager
         if(!interactuable) return;
         
 
-        Debug.Log("Manejando objeto clickeado: " + objetoClickeado.name);
+        Debug.Log("Manejando objeto clickeado: " + objetoClickeado.name+" id: "+objetoClickeado.GetId());
 
         //Mostrar texto pantalla npc1
         Debug.Log("Objeto clickeado: " + objetoClickeado.name);
@@ -96,6 +96,11 @@ public class DemoManager : GameplayManager
             else if(objetoClickeado.GetId() == 7)
             {
                 SceneManager.LoadScene("GrandpaSide2D");
+            }
+            else if (objetoClickeado.GetId() == 8)
+            {
+                Debug.Log("Cargando escena Pueblo");
+                SceneManager.LoadScene("Pueblo");
             }
 
 

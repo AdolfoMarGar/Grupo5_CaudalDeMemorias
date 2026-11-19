@@ -156,7 +156,7 @@ public class GameplayManager : MonoBehaviour
         Vector3 nuevaPosicion = exits[idExitTo - 1].transform.position;
         this.gameObject.transform.position = nuevaPosicion;
 
-        playerMovementScript.SetLimitsPosition(topPositions[idCamara - 1], bottomPositions[idCamara - 1]);
+        playerMovementScript.SetLimitsPosition(topPositions[idCamaraTo - 1], bottomPositions[idCamaraTo - 1]);
 
         camaraDestino.transform.position = new Vector3(
             nuevaPosicion.x,

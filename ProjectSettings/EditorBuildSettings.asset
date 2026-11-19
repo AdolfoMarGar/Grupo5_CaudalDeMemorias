@@ -41,5 +41,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Minigames/AljibeFishingMinigame.unity
     guid: 46c5a9770179c9e40867c4e177adbf05
+  - enabled: 1
+    path: Assets/Scenes/Pueblo.unity
+    guid: 34dbc66e96321734f81826b51a6874ab
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
