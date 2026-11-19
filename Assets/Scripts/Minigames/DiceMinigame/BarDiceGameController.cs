@@ -5,293 +5,376 @@ using TMPro;
 
 public class BarDiceGameController : MonoBehaviour
 {
-    [SerializeField] private int playerCoins = 100;
-    [SerializeField] private int initialBet = 10;
-    [SerializeField] private int currentPot = 0;
-    [SerializeField] private int machineDiceValue = 1;
-    [SerializeField] private int playerDiceValue = 1;
+    [SerializeField] private int targetStreak = 3;
+    [SerializeField] private float baseTimeLimit = 4.5f;
+    [SerializeField] private float minTimeLimit = 1.5f;
+    [SerializeField] private float timeDecayPerWin = 0.72f;
+    [SerializeField] private float revealPauseDuration = 1.1f;
 
-    [SerializeField] private float playerRollDuration = 2.0f;
-    [SerializeField] private float initialRollDuration = 2.0f;
-
-    [SerializeField] private TextMeshProUGUI coinsText;
-    [SerializeField] private TextMeshProUGUI potText;
+    [SerializeField] private TextMeshProUGUI streakText;
+    [SerializeField] private TextMeshProUGUI bestStreakText;
     [SerializeField] private TextMeshProUGUI dialogueText;
+
+    [SerializeField] private Image timerFillImage;
+    [SerializeField] private TextMeshProUGUI timerText;
 
     [SerializeField] private RectTransform machineDiceTransform;
     [SerializeField] private TextMeshProUGUI machineDiceValueText;
-    [SerializeField] private Image machineDiceImage;
-
     [SerializeField] private RectTransform playerDiceTransform;
     [SerializeField] private TextMeshProUGUI playerDiceValueText;
-    [SerializeField] private Image playerDiceImage;
+    [SerializeField] private TextMeshProUGUI vsBadgeText;
 
-    [SerializeField] private Button buttonHigher;
-    [SerializeField] private Button buttonLower;
-    [SerializeField] private Button buttonCashOut;
-    [SerializeField] private Button buttonNewRoll;
-    [SerializeField] private Button buttonExit;
+    [SerializeField] private Button buttonPares;
+    [SerializeField] private Button buttonNones;
+    [SerializeField] private Button buttonPlayAgain;
 
-    private bool isRoundActive = false;
-    private bool isAnimating = false;
-    private bool exitRequested = false;
+    private int currentStreak;
+    private int totalWins;
+    private float currentTimeLimit;
+    private float remainingTime;
+    private bool isWaitingForChoice;
+    private bool hasChosen;
+    private bool chosenPares;
+    private Coroutine activeRoundCoroutine;
 
-    public int PlayerCoins
+    public int TargetStreak
     {
-        get => playerCoins;
-        set => playerCoins = value;
+        get => targetStreak;
+        set => targetStreak = value;
     }
 
-    public int CurrentPot => currentPot;
-    public bool ExitRequested => exitRequested;
-    public float PlayerRollDuration
+    public int CurrentStreak => currentStreak;
+    public int TotalWins => totalWins;
+    public float CurrentTimeLimit => currentTimeLimit;
+
+    public float BaseTimeLimit
     {
-        get => playerRollDuration;
-        set => playerRollDuration = value;
+        get => baseTimeLimit;
+        set => baseTimeLimit = value;
     }
 
-    public float InitialRollDuration
+    public float MinTimeLimit
     {
-        get => initialRollDuration;
-        set => initialRollDuration = value;
+        get => minTimeLimit;
+        set => minTimeLimit = value;
     }
 
-    public Button ButtonExit
+    public float TimeDecayPerWin
     {
-        get => buttonExit;
-        set => buttonExit = value;
+        get => timeDecayPerWin;
+        set => timeDecayPerWin = value;
+    }
+
+    public float RevealPauseDuration
+    {
+        get => revealPauseDuration;
+        set => revealPauseDuration = value;
+    }
+
+    public TextMeshProUGUI StreakText
+    {
+        get => streakText;
+        set => streakText = value;
+    }
+
+    public TextMeshProUGUI BestStreakText
+    {
+        get => bestStreakText;
+        set => bestStreakText = value;
+    }
+
+    public TextMeshProUGUI DialogueText
+    {
+        get => dialogueText;
+        set => dialogueText = value;
+    }
+
+    public Image TimerFillImage
+    {
+        get => timerFillImage;
+        set => timerFillImage = value;
+    }
+
+    public TextMeshProUGUI TimerText
+    {
+        get => timerText;
+        set => timerText = value;
+    }
+
+    public RectTransform MachineDiceTransform
+    {
+        get => machineDiceTransform;
+        set => machineDiceTransform = value;
+    }
+
+    public TextMeshProUGUI MachineDiceValueText
+    {
+        get => machineDiceValueText;
+        set => machineDiceValueText = value;
+    }
+
+    public RectTransform PlayerDiceTransform
+    {
+        get => playerDiceTransform;
+        set => playerDiceTransform = value;
+    }
+
+    public TextMeshProUGUI PlayerDiceValueText
+    {
+        get => playerDiceValueText;
+        set => playerDiceValueText = value;
+    }
+
+    public TextMeshProUGUI VsBadgeText
+    {
+        get => vsBadgeText;
+        set => vsBadgeText = value;
+    }
+
+    public Button ButtonPares
+    {
+        get => buttonPares;
+        set => buttonPares = value;
+    }
+
+    public Button ButtonNones
+    {
+        get => buttonNones;
+        set => buttonNones = value;
+    }
+
+    public Button ButtonPlayAgain
+    {
+        get => buttonPlayAgain;
+        set => buttonPlayAgain = value;
     }
 
     private void Start()
     {
-        if (buttonHigher != null)
+        if (buttonPares != null)
         {
-            buttonHigher.onClick.RemoveAllListeners();
-            buttonHigher.onClick.AddListener(() => OnPlayerGuess(true));
+            buttonPares.onClick.RemoveAllListeners();
+            buttonPares.onClick.AddListener(() => SelectParity(true));
         }
 
-        if (buttonLower != null)
+        if (buttonNones != null)
         {
-            buttonLower.onClick.RemoveAllListeners();
-            buttonLower.onClick.AddListener(() => OnPlayerGuess(false));
+            buttonNones.onClick.RemoveAllListeners();
+            buttonNones.onClick.AddListener(() => SelectParity(false));
         }
 
-        if (buttonCashOut != null)
+        if (buttonPlayAgain != null)
         {
-            buttonCashOut.onClick.RemoveAllListeners();
-            buttonCashOut.onClick.AddListener(OnCashOut);
+            buttonPlayAgain.onClick.RemoveAllListeners();
+            buttonPlayAgain.onClick.AddListener(StartNewGame);
         }
 
-        if (buttonNewRoll != null)
-        {
-            buttonNewRoll.onClick.RemoveAllListeners();
-            buttonNewRoll.onClick.AddListener(StartNewRound);
-        }
-
-        if (buttonExit != null)
-        {
-            buttonExit.onClick.RemoveAllListeners();
-            buttonExit.onClick.AddListener(RequestExit);
-        }
-
-        StartNewRound();
+        StartNewGame();
     }
 
-    public void RequestExit()
+    public void StartNewGame()
     {
-        exitRequested = true;
-        isRoundActive = false;
-        isAnimating = false;
-        StopAllCoroutines();
-    }
-
-    public void StartNewRound()
-    {
-        if (isAnimating) return;
-
-        exitRequested = false;
-
-        if (playerCoins < initialBet)
+        if (activeRoundCoroutine != null)
         {
-            playerCoins = 50;
-            SetDialogue("¡Te quedaste sin blanca! Toma 50 monedas cortesía de la casa.");
+            StopCoroutine(activeRoundCoroutine);
         }
 
-        playerCoins -= initialBet;
-        currentPot = initialBet;
-        isRoundActive = true;
-
+        currentStreak = 0;
+        currentTimeLimit = Mathf.Max(minTimeLimit, baseTimeLimit);
         UpdateHeaderUI();
-        StartCoroutine(InitialRollRoutine());
+        activeRoundCoroutine = StartCoroutine(RoundRoutine());
     }
 
-    private IEnumerator InitialRollRoutine()
+    public void SelectParity(bool pares)
     {
-        isAnimating = true;
-        UpdateButtonStates(false);
+        if (!isWaitingForChoice || hasChosen) return;
 
-        SetDialogue("El tabernero lanza su dado sobre la mesa...");
+        chosenPares = pares;
+        hasChosen = true;
+    }
 
-        float duration = Mathf.Max(0.5f, initialRollDuration);
-        float elapsed = 0f;
+    private void StartNextRound()
+    {
+        currentTimeLimit = Mathf.Max(minTimeLimit, baseTimeLimit * Mathf.Pow(timeDecayPerWin, currentStreak));
+        activeRoundCoroutine = StartCoroutine(RoundRoutine());
+    }
+
+    private IEnumerator RoundRoutine()
+    {
+        isWaitingForChoice = true;
+        hasChosen = false;
+
+        SetChoiceButtonsVisible(true);
+        SetChoiceButtonsInteractable(true);
+        if (buttonPlayAgain != null) buttonPlayAgain.gameObject.SetActive(false);
+        if (vsBadgeText != null) vsBadgeText.text = "+";
+
+        SetDialogue($"<b>Ronda {currentStreak + 1} / {targetStreak}</b> — ¡Los dados ruedan! ¿Será <b>PARES</b> o <b>NONES</b>?");
+
+        remainingTime = currentTimeLimit;
         float changeTimer = 0f;
-        float changeInterval = 0.06f;
-        Vector3 origScale = machineDiceTransform != null ? machineDiceTransform.localScale : Vector3.one;
+        float changeInterval = 0.055f;
+        Vector3 machineOrigScale = machineDiceTransform != null ? machineDiceTransform.localScale : Vector3.one;
+        Vector3 playerOrigScale = playerDiceTransform != null ? playerDiceTransform.localScale : Vector3.one;
 
-        while (elapsed < duration)
+        while (remainingTime > 0f && !hasChosen)
         {
-            elapsed += Time.deltaTime;
+            remainingTime -= Time.deltaTime;
             changeTimer += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / duration);
+
+            UpdateTimerUI(Mathf.Max(0f, remainingTime), currentTimeLimit);
 
             if (changeTimer >= changeInterval)
             {
                 changeTimer = 0f;
-                changeInterval = Mathf.Lerp(0.04f, 0.12f, progress);
-                int tempRoll = Random.Range(1, 7);
-                UpdateDiceVisual(machineDiceValueText, tempRoll);
+                UpdateDiceVisual(machineDiceValueText, Random.Range(1, 7));
+                UpdateDiceVisual(playerDiceValueText, Random.Range(1, 7));
             }
 
-            if (machineDiceTransform != null)
-            {
-                float maxAngle = Mathf.Lerp(22f, 4f, progress);
-                float rotZ = Mathf.Sin(elapsed * 24f) * maxAngle;
-                machineDiceTransform.localRotation = Quaternion.Euler(0f, 0f, rotZ);
-                float punch = 1f + Mathf.Sin(elapsed * 30f) * 0.08f * (1f - progress * 0.7f);
-                machineDiceTransform.localScale = new Vector3(origScale.x * punch, origScale.y * punch, origScale.z);
-            }
+            AnimateDice(machineDiceTransform, machineOrigScale, remainingTime, 24f, 18f);
+            AnimateDice(playerDiceTransform, playerOrigScale, remainingTime, -26f, 18f);
 
             yield return null;
         }
 
-        if (machineDiceTransform != null)
+        isWaitingForChoice = false;
+        SetChoiceButtonsInteractable(false);
+        ResetDiceTransform(machineDiceTransform, machineOrigScale);
+        ResetDiceTransform(playerDiceTransform, playerOrigScale);
+
+        if (!hasChosen)
         {
-            machineDiceTransform.localRotation = Quaternion.identity;
-            machineDiceTransform.localScale = origScale;
+            UpdateTimerUI(0f, currentTimeLimit);
+            UpdateDiceVisual(machineDiceValueText, 0);
+            UpdateDiceVisual(playerDiceValueText, 0);
+            HandleLoss("<color=#FF4500>¡TIEMPO AGOTADO!</color> Tardaste demasiado en elegir.\nTu racha y la velocidad se han reiniciado.");
+            yield break;
         }
 
-        machineDiceValue = Random.Range(1, 7);
-        UpdateDiceVisual(machineDiceValueText, machineDiceValue);
-        UpdateDiceVisual(playerDiceValueText, 0);
+        int machineValue = Random.Range(1, 7);
+        int playerValue = Random.Range(1, 7);
+        int total = machineValue + playerValue;
+        bool isEven = (total % 2) == 0;
+        bool won = (chosenPares == isEven);
+        string parityLabel = isEven ? "PARES" : "NONES";
 
-        SetDialogue($"El tabernero sacó un <b>{machineDiceValue}</b>.\n¿Tu tirada será <b>MAYOR</b> o <b>MENOR</b> que la suya?");
+        UpdateDiceVisual(machineDiceValueText, machineValue);
+        UpdateDiceVisual(playerDiceValueText, playerValue);
+        if (vsBadgeText != null) vsBadgeText.text = $"= {total}";
 
-        isAnimating = false;
-        UpdateButtonStates(true);
-    }
+        if (machineDiceTransform != null) machineDiceTransform.localScale = machineOrigScale * 1.18f;
+        if (playerDiceTransform != null) playerDiceTransform.localScale = playerOrigScale * 1.18f;
 
-    public void OnPlayerGuess(bool guessHigher)
-    {
-        if (!isRoundActive || isAnimating) return;
-
-        StartCoroutine(RollPlayerDiceRoutine(guessHigher));
-    }
-
-    private IEnumerator RollPlayerDiceRoutine(bool guessHigher)
-    {
-        isAnimating = true;
-        UpdateButtonStates(false);
-
-        SetDialogue("¡Lanzas tus dados con fuerza sobre el tapete!");
-
-        float duration = Mathf.Max(0.5f, playerRollDuration);
-        float elapsed = 0f;
-        float changeTimer = 0f;
-        float changeInterval = 0.06f;
-        Vector3 origScale = playerDiceTransform != null ? playerDiceTransform.localScale : Vector3.one;
-
-        while (elapsed < duration)
+        if (won)
         {
-            elapsed += Time.deltaTime;
-            changeTimer += Time.deltaTime;
-            float progress = Mathf.Clamp01(elapsed / duration);
+            currentStreak++;
 
-            if (changeTimer >= changeInterval)
+            if (currentStreak >= targetStreak)
             {
-                changeTimer = 0f;
-                changeInterval = Mathf.Lerp(0.04f, 0.14f, progress);
-                int tempRoll = Random.Range(1, 7);
-                UpdateDiceVisual(playerDiceValueText, tempRoll);
+                totalWins++;
+                UpdateHeaderUI();
+                if (machineDiceTransform != null) machineDiceTransform.localScale = machineOrigScale;
+                if (playerDiceTransform != null) playerDiceTransform.localScale = playerOrigScale;
+                HandleVictory(machineValue, playerValue, total, parityLabel);
+                yield break;
             }
 
-            if (playerDiceTransform != null)
-            {
-                float maxAngle = Mathf.Lerp(25f, 4f, progress);
-                float rotZ = Mathf.Sin(elapsed * 26f) * maxAngle;
-                playerDiceTransform.localRotation = Quaternion.Euler(0f, 0f, rotZ);
-                float punch = 1f + Mathf.Sin(elapsed * 32f) * 0.1f * (1f - progress * 0.7f);
-                playerDiceTransform.localScale = new Vector3(origScale.x * punch, origScale.y * punch, origScale.z);
-            }
-
-            yield return null;
-        }
-
-        if (playerDiceTransform != null)
-        {
-            playerDiceTransform.localRotation = Quaternion.identity;
-            playerDiceTransform.localScale = origScale * 1.2f;
-        }
-
-        playerDiceValue = Random.Range(1, 7);
-        UpdateDiceVisual(playerDiceValueText, playerDiceValue);
-
-        yield return new WaitForSeconds(0.2f);
-
-        if (playerDiceTransform != null)
-        {
-            playerDiceTransform.localScale = origScale;
-        }
-
-        bool isCorrect = (guessHigher && playerDiceValue > machineDiceValue) || (!guessHigher && playerDiceValue < machineDiceValue);
-        bool isEqual = (playerDiceValue == machineDiceValue);
-
-        if (isCorrect)
-        {
-            currentPot *= 2;
             UpdateHeaderUI();
 
-            SetDialogue($"<color=#00FF7F>¡ACERTASTE!</color> Sacaste un <b>{playerDiceValue}</b> frente al <b>{machineDiceValue}</b> de la casa.\n¡El bote sube a <b>{currentPot} monedas</b>! ¿Sigues arriesgando o cobras?");
+            float nextLimit = Mathf.Max(minTimeLimit, baseTimeLimit * Mathf.Pow(timeDecayPerWin, currentStreak));
+            SetDialogue($"<color=#00FF7F>¡ACERTASTE!</color> {machineValue} + {playerValue} = <b>{total} ({parityLabel})</b>.\n¡Racha: <b>{currentStreak} / {targetStreak}</b>! Siguiente ronda ({nextLimit:0.0}s)...");
 
-            isAnimating = false;
-            UpdateButtonStates(true);
+            float pause = Mathf.Max(0.65f, revealPauseDuration - currentStreak * 0.08f);
+            float pauseElapsed = 0f;
+            while (pauseElapsed < pause)
+            {
+                pauseElapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(pauseElapsed / 0.2f);
+                if (machineDiceTransform != null) machineDiceTransform.localScale = Vector3.Lerp(machineOrigScale * 1.18f, machineOrigScale, t);
+                if (playerDiceTransform != null) playerDiceTransform.localScale = Vector3.Lerp(playerOrigScale * 1.18f, playerOrigScale, t);
+                yield return null;
+            }
+
+            StartNextRound();
         }
         else
         {
-            isRoundActive = false;
-            string reason = isEqual
-                ? $"¡Empate con un <b>{playerDiceValue}</b>! En esta taberna el empate se lo queda la banca."
-                : $"¡Fallaste! Esperabas {(guessHigher ? "MAYOR" : "MENOR")} pero sacaste un <b>{playerDiceValue}</b> frente al <b>{machineDiceValue}</b>.";
-
-            SetDialogue($"<color=#FF4500>¡PERDISTE EL BOTE!</color> {reason}\nPerdiste las {currentPot} monedas acumuladas.");
-            currentPot = 0;
-            UpdateHeaderUI();
-
-            isAnimating = false;
-            UpdateButtonStates(false);
-            if (buttonNewRoll != null) buttonNewRoll.gameObject.SetActive(true);
+            if (machineDiceTransform != null) machineDiceTransform.localScale = machineOrigScale;
+            if (playerDiceTransform != null) playerDiceTransform.localScale = playerOrigScale;
+            string chosenLabel = chosenPares ? "PARES" : "NONES";
+            HandleLoss($"<color=#FF4500>¡FALLASTE!</color> Elegiste <b>{chosenLabel}</b>, pero {machineValue} + {playerValue} = <b>{total} ({parityLabel})</b>.\nTu racha y la velocidad se han reiniciado.");
         }
     }
 
-    public void OnCashOut()
+    private void HandleVictory(int machineValue, int playerValue, int total, string parityLabel)
     {
-        if (!isRoundActive || isAnimating || currentPot <= 0) return;
+        Debug.Log("Victoria en los dados");
+        SetDialogue($"<color=#FFD700>¡VICTORIA!</color> {machineValue} + {playerValue} = <b>{total} ({parityLabel})</b>.\n¡Has ganado {targetStreak} rondas seguidas!");
+        SetChoiceButtonsVisible(false);
 
-        playerCoins += currentPot;
-        int collected = currentPot;
-        currentPot = 0;
-        isRoundActive = false;
+        if (buttonPlayAgain != null)
+        {
+            buttonPlayAgain.gameObject.SetActive(true);
+        }
+    }
 
+    private void HandleLoss(string message)
+    {
+        currentStreak = 0;
+        currentTimeLimit = Mathf.Max(minTimeLimit, baseTimeLimit);
         UpdateHeaderUI();
-        SetDialogue($"<color=#FFD700>¡BOTE COBRADO!</color> Te plantas con <b>{collected} monedas</b> en el bolsillo.\nTotal acumulado: <b>{playerCoins}</b> monedas.");
+        SetDialogue(message);
+        SetChoiceButtonsVisible(false);
 
-        UpdateButtonStates(false);
-        if (buttonNewRoll != null) buttonNewRoll.gameObject.SetActive(true);
+        if (buttonPlayAgain != null)
+        {
+            buttonPlayAgain.gameObject.SetActive(true);
+        }
+    }
+
+    private void AnimateDice(RectTransform diceTransform, Vector3 origScale, float timeValue, float rotSpeed, float maxAngle)
+    {
+        if (diceTransform == null) return;
+        float rotZ = Mathf.Sin(timeValue * rotSpeed) * maxAngle;
+        diceTransform.localRotation = Quaternion.Euler(0f, 0f, rotZ);
+        float punch = 1f + Mathf.Sin(timeValue * 30f) * 0.08f;
+        diceTransform.localScale = new Vector3(origScale.x * punch, origScale.y * punch, origScale.z);
+    }
+
+    private void ResetDiceTransform(RectTransform diceTransform, Vector3 origScale)
+    {
+        if (diceTransform == null) return;
+        diceTransform.localRotation = Quaternion.identity;
+        diceTransform.localScale = origScale;
+    }
+
+    private void UpdateTimerUI(float remaining, float limit)
+    {
+        float ratio = limit > 0f ? Mathf.Clamp01(remaining / limit) : 0f;
+
+        if (timerFillImage != null)
+        {
+            timerFillImage.fillAmount = ratio;
+            if (ratio > 0.5f)
+            {
+                timerFillImage.color = Color.Lerp(new Color(0.95f, 0.72f, 0.2f, 1f), new Color(0.25f, 0.85f, 0.45f, 1f), (ratio - 0.5f) * 2f);
+            }
+            else
+            {
+                timerFillImage.color = Color.Lerp(new Color(0.92f, 0.22f, 0.2f, 1f), new Color(0.95f, 0.72f, 0.2f, 1f), ratio * 2f);
+            }
+        }
+
+        if (timerText != null)
+        {
+            timerText.text = $"{remaining:0.0}s";
+        }
     }
 
     private void UpdateHeaderUI()
     {
-        if (coinsText != null) coinsText.text = $"Monedas: <color=#FFD700><b>{playerCoins}</b></color>";
-        if (potText != null) potText.text = $"Bote acumulado: <color=#00FF7F><b>{currentPot}</b></color>";
+        if (streakText != null) streakText.text = $"Racha: <color=#00FF7F><b>{currentStreak} / {targetStreak}</b></color>";
+        if (bestStreakText != null) bestStreakText.text = $"Victorias: <color=#FFD700><b>{totalWins}</b></color>";
     }
 
     private void SetDialogue(string msg)
@@ -305,15 +388,15 @@ public class BarDiceGameController : MonoBehaviour
         valText.text = val <= 0 ? "?" : val.ToString();
     }
 
-    private void UpdateButtonStates(bool inGame)
+    private void SetChoiceButtonsInteractable(bool interactable)
     {
-        if (buttonHigher != null) buttonHigher.interactable = inGame;
-        if (buttonLower != null) buttonLower.interactable = inGame;
-        if (buttonCashOut != null) buttonCashOut.interactable = inGame && currentPot > initialBet;
+        if (buttonPares != null) buttonPares.interactable = interactable;
+        if (buttonNones != null) buttonNones.interactable = interactable;
+    }
 
-        if (buttonNewRoll != null)
-        {
-            buttonNewRoll.gameObject.SetActive(!inGame);
-        }
+    private void SetChoiceButtonsVisible(bool visible)
+    {
+        if (buttonPares != null) buttonPares.gameObject.SetActive(visible);
+        if (buttonNones != null) buttonNones.gameObject.SetActive(visible);
     }
 }
