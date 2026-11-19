@@ -34,11 +34,11 @@ public class Pueblo : GameplayManager
             // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
             if (exit.GetId() == 1)
             {
-                InteractionExit(5, 1, 2);
+                InteractionExit(6, 1, 2);
             }
             else if (exit.GetId() == 2)
             {
-                InteractionExit(6 , 1, 2);
+                InteractionExit(5 , 1, 2);
             }
             else if (exit.GetId() == 3)
             {
@@ -50,11 +50,11 @@ public class Pueblo : GameplayManager
             }
             else if (exit.GetId() == 5)
             {
-                InteractionExit( 1, 2, 1);
+                InteractionExit( 2, 2, 1);
             }
             else if (exit.GetId() == 6)
             {
-                InteractionExit( 2, 2, 1);
+                InteractionExit( 1, 2, 1);
             }
             else if (exit.GetId() == 7)
             {
