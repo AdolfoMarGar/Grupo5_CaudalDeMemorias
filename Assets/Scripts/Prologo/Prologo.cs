@@ -24,13 +24,18 @@ public class Prologo : MonoBehaviour
     [SerializeField] private InfiniteQuadScroll scroll2D;
     [SerializeField] private InfiniteQuadScroll scroll2D2;
     [SerializeField] private SpriteRenderer cuadradoNegro;
-    
+    [SerializeField] private Canvas canvaFondoNegro;
+    [SerializeField] private TextScreen textScreenFondoNegro;
+
+
+
 
 
     void Start()
     {
         canvaMc.gameObject.SetActive(false);
         canvaAb.gameObject.SetActive(false);
+        canvaFondoNegro.gameObject.SetActive(false);
         ab.gameObject.SetActive(false);
         arbol.gameObject.SetActive(false);
         StartCoroutine(SecuenciaPrologo());
@@ -40,22 +45,69 @@ public class Prologo : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     IEnumerator SecuenciaPrologo()
     {
 
         yield return new WaitForSeconds(1.5f);
 
-        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 1, 0));
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 0));
         yield return new WaitForSeconds(3f);
-        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 1, 4));
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 4));
         yield return StartCoroutine(IntroducirArbol());
-        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 1, 5));
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 5));
+        yield return StartCoroutine(AndarMcAlArbol());
+        yield return new WaitForSeconds(1f);
         yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 1f, 1.5f));
+        yield return new WaitForSeconds(1f);
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 8));
+        yield return new WaitForSeconds(1f);
+
+        ab.gameObject.SetActive(true);
+
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 1, 0));
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 0f, 0.3f));
+
+        yield return new WaitForSeconds(1f);
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 10));
+        yield return CorrerMcAlAb();
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 11));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 1));
+
+
+
+
+
+
+
 
     }
+    IEnumerator CorrerMcAlAb()
+    {
+        mc.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        float velocidad = 4f;
+        Vector3 destino = new Vector3(
+            ab.transform.position.x+0.3f,
+            mc.transform.position.y,
+            mc.transform.position.z
+        );
 
+        while (Mathf.Abs(mc.transform.position.x - destino.x) > 0.01f)
+        {
+            mc.transform.position = Vector3.MoveTowards(
+                mc.transform.position,
+                destino,
+                velocidad * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        mc.transform.position = destino;
+
+    }
     IEnumerator IntroducirArbol()
     {
         arbol.gameObject.SetActive(true);
@@ -74,9 +126,40 @@ public class Prologo : MonoBehaviour
         scroll2D.scrollSpeed = 0f;
         scroll2D2.scrollSpeed = 0f;
     }
+
+    IEnumerator AndarMcAlArbol()
+    {
+        float velocidad = 2f;
+        Vector3 destino = new Vector3(
+            arbol.transform.position.x,
+            mc.transform.position.y,
+            mc.transform.position.z
+        );
+
+        while (Mathf.Abs(mc.transform.position.x - destino.x) > 0.01f)
+        {
+            mc.transform.position = Vector3.MoveTowards(
+                mc.transform.position,
+                destino,
+                velocidad * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        mc.transform.position = destino;
+
+    }
     private IEnumerator TextoInteractable(Interactable interact, Canvas canva, TextScreen textScreen, int closeUpId, int endTextId)
     {
         Debug.Log("textoSeleccionado: " + interact.GetSelectedText());
+        Debug.Log("canva: " + canva.name);
+        Debug.Log("textScreen: " + textScreen.name);
+        Debug.Log("closeUpId: " + closeUpId);
+        Debug.Log("endTextId: " + endTextId);
+
+
+
         bool dialogosTerminados = false;
 
         // Nos suscribimos temporalmente al evento de que el texto terminó
@@ -84,6 +167,12 @@ public class Prologo : MonoBehaviour
 
 
         canva.gameObject.SetActive(true);
+        yield return null;
+        if (closeUpId >= 0)
+        {
+            Debug.Log("Mostrando closeup con id: " + closeUpId);
+            textScreen.ShowCloseUp(closeUpId);
+        }
         yield return null;
 
         // Mostramos los diálogos
@@ -97,8 +186,10 @@ public class Prologo : MonoBehaviour
 
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
         Debug.Log("textoSeleccionado: " + interact.GetSelectedText());
-        interact.SetSelectedText(endTextId+1);
+        interact.SetSelectedText(endTextId + 1);
         canva.gameObject.SetActive(false);
+        textScreen.HideAllCloseUps();
+
 
 
 
