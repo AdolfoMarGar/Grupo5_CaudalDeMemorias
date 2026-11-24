@@ -45,7 +45,6 @@ public class Prologo : MonoBehaviour
     IEnumerator SecuenciaPrologo()
     {
 
-        // Responde el MC (closeUp 0 en canvaMc, textos desde su índice actual hasta el 1)
         yield return new WaitForSeconds(1.5f);
 
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 1, 0));

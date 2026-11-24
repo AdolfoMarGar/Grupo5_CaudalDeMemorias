@@ -12,6 +12,7 @@ public class CloseUpPair
     public string groupName;
     public Image partUp;
     public Image partDown; // Déjalo en None si este close-up es de 1 sola parte
+    public TextMeshProUGUI closeUpText; // Déjalo en None si este close-up no lleva texto
 }
 
 public class TextScreen : MonoBehaviour
@@ -60,6 +61,7 @@ public class TextScreen : MonoBehaviour
 
         if (pair.partUp != null) pair.partUp.enabled = true;
         if (pair.partDown != null) pair.partDown.enabled = true;
+        if (pair.closeUpText != null) pair.closeUpText.enabled = true;
     }
 
     public void HideAllCloseUps()
@@ -71,6 +73,7 @@ public class TextScreen : MonoBehaviour
             if (pair == null) continue;
             if (pair.partUp != null) pair.partUp.enabled = false;
             if (pair.partDown != null) pair.partDown.enabled = false;
+            if (pair.closeUpText != null) pair.closeUpText.enabled = false;
         }
     }
 

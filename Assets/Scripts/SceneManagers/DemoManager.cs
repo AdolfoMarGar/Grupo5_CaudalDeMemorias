@@ -18,10 +18,7 @@ public class DemoManager : GameplayManager
         base.Start();
         treeMinigame.gameObject.SetActive(false);
 
-        foreach (Image closeup in closeUps)
-        {
-            closeup.gameObject.SetActive(false);
-        }
+        
 
         if (canvas != null)
             canvas.gameObject.SetActive(false);
@@ -216,7 +213,6 @@ public class DemoManager : GameplayManager
         // Nos suscribimos temporalmente al evento de que el texto terminó
         textScreen.OnDialogosTerminados += TerminoElTexto;
         canvas.gameObject.SetActive(true);
-        closeUps[0].gameObject.SetActive(true);
 
         // Mostramos los diálogos
         textScreen.MostrarDialogos(objetoClickeado.GetTexts(), objetoClickeado.GetSelectedText(), objetoClickeado.GetTexts().Count - 1);
@@ -226,7 +222,6 @@ public class DemoManager : GameplayManager
 
         // Desuscribimos el evento para evitar bugs
         textScreen.OnDialogosTerminados -= TerminoElTexto;
-        closeUps[0].gameObject.SetActive(false);
         canvas.gameObject.SetActive(false);
 
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---

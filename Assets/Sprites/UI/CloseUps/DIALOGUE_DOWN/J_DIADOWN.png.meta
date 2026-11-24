@@ -40,7 +40,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 2
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -54,7 +54,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 9
   spritePivot: {x: 0.8421825, y: 0.061247494}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 400
   spriteBorder: {x: 1277, y: 0, z: 23, w: 945}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -121,7 +121,7 @@ TextureImporter:
         serializedVersion: 2
         x: 1276
         y: 0
-        width: 618
+        width: 621
         height: 134
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -133,28 +133,6 @@ TextureImporter:
       bones: []
       spriteID: 5d065c6657f72afe0800000000000000
       internalID: -1179240010205536043
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: J_DIADOWN_1
-      rect:
-        serializedVersion: 2
-        x: 1884
-        y: 3
-        width: 6
-        height: 7
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 5b2c6841619dfdda0800000000000000
-      internalID: -5917772696484658507
       vertices: []
       indices: 
       edges: []

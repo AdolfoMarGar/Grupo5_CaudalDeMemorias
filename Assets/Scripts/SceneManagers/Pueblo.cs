@@ -21,7 +21,7 @@ public class Pueblo : GameplayManager
 
         Debug.Log("Manejando interactuable: " + objetoClickeado.name);
         if(objetoClickeado is Npcs npc){
-            StartCoroutine(TextoNpc(npc));
+            StartCoroutine(TextoInteractable(npc, canvas, textScreen, npc.GetId()-1, npc.GetTexts().Count - 1));
         }
         
         if (objetoClickeado is Exits exit)
@@ -111,6 +111,49 @@ public class Pueblo : GameplayManager
 
 
     }
+    private IEnumerator TextoInteractable(Interactable interact, Canvas canva, TextScreen textScreen, int closeUpId, int endTextId)
+    {
+        playerMovementScript.canMove = false;
+        playerInteractableScript.puedeInteractuar = false;
+        Debug.Log("textoSeleccionado: " + interact.GetSelectedText());
+        bool dialogosTerminados = false;
+
+        // Nos suscribimos temporalmente al evento de que el texto terminó
+        textScreen.OnDialogosTerminados += TerminoElTexto;
+        if(closeUpId >= 0)
+        {
+            textScreen.ShowCloseUp(closeUpId);
+        }
+
+        canva.gameObject.SetActive(true);
+        yield return null;
+
+        // Mostramos los diálogos
+        textScreen.MostrarDialogos(interact.GetTexts(), interact.GetSelectedText(), endTextId);
+
+        // Pausamos la ejecución de este código hasta que el evento devuelva true
+        yield return new WaitUntil(() => dialogosTerminados);
+
+        // Desuscribimos el evento para evitar bugs
+        textScreen.OnDialogosTerminados -= TerminoElTexto;
+
+        // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---
+        Debug.Log("textoSeleccionado: " + interact.GetSelectedText());
+        //interact.SetSelectedText(endTextId + 1);
+        canva.gameObject.SetActive(false);
+        textScreen.HideAllCloseUps();
+        interactuable = true;
+        playerMovementScript.canMove = true;
+        playerInteractableScript.puedeInteractuar = true;
+
+
+
+        void TerminoElTexto()
+        {
+            dialogosTerminados = true;
+        }
+
+    }
     private IEnumerator TextoNpc(Npcs npc)
     {
         playerMovementScript.canMove = false;
@@ -121,7 +164,6 @@ public class Pueblo : GameplayManager
         // Nos suscribimos temporalmente al evento de que el texto terminó
         textScreen.OnDialogosTerminados += TerminoElTexto;
         canvas.gameObject.SetActive(true);
-        closeUps[npc.GetId() - 1].gameObject.SetActive(true);
 
         // Mostramos los diálogos
         textScreen.MostrarDialogos(npc.GetTexts(), 0, npc.GetTexts().Count - 1);
@@ -131,7 +173,6 @@ public class Pueblo : GameplayManager
 
         // Desuscribimos el evento para evitar bugs
         textScreen.OnDialogosTerminados -= TerminoElTexto;
-        closeUps[npc.GetId() - 1].gameObject.SetActive(false);
         canvas.gameObject.SetActive(false);
 
         // --- A PARTIR DE AQUÍ SE EJECUTA CUANDO EL JUGADOR TERMINA DE LEER ---

@@ -14,7 +14,6 @@ public class GameplayManager : MonoBehaviour
     protected List<Exits> exits = new List<Exits>();
     [SerializeField] protected TextScreen textScreen;
     [SerializeField] protected Canvas canvas;
-    [SerializeField] protected List<Image> closeUps;
     [SerializeField] protected List<CinemachineCamera> cameras;
     [SerializeField] protected PlayerMovement playerMovementScript;
     [SerializeField] protected PlayerInteractable playerInteractableScript;
@@ -44,10 +43,6 @@ public class GameplayManager : MonoBehaviour
         {
             Debug.LogError("¡No se encontraron cámaras en la escena!");
         }
-        if(closeUps == null || closeUps.Count == 0)
-        {
-            Debug.LogError("¡No se encontraron CloseUps en la escena!");
-        }
         if (!FindAnyObjectByType<PlayerMovement>())
         {
             Debug.LogError("¡No se encontró ningún PlayerMovement en la escena!");
@@ -75,20 +70,7 @@ public class GameplayManager : MonoBehaviour
         {
             Debug.LogError("¡No se encontró PlayerInteractable en la escena!");
         }
-        if (closeUps != null && closeUps.Count > 0)
-        {
-            foreach (var closeUp in closeUps)
-            {
-                if (closeUp != null)
-                {
-                    closeUp.gameObject.SetActive(false);
-                }
-            }
-        }
-        else
-        {
-            Debug.LogError("¡No se encontraron CloseUps en la escena!");
-        }
+
 
         RegistrarInteractables();
     }
