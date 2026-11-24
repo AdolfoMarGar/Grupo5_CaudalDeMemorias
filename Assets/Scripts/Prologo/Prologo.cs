@@ -53,40 +53,36 @@ public class Prologo : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 0));
-        yield return new WaitForSeconds(3f);
+        yield return new WaitForSeconds(3f);//pausa drama
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 4));
-        yield return StartCoroutine(IntroducirArbol());
+        yield return StartCoroutine(IntroducirArbol());//aparece arbol en escena y paramos el scroll
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 5));
-        yield return StartCoroutine(AndarMcAlArbol());
+        yield return StartCoroutine(AndarMcAlArbol());//mc anda al arbol
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 1f, 1.5f));
-        yield return new WaitForSeconds(1f);
-
-        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 8));
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 1f, 1.5f));//fundido a negro
         yield return new WaitForSeconds(1f);
 
-        ab.gameObject.SetActive(true);
-
-        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 1, 0));
-        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 0f, 0.3f));
-
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 8));//texto en negro
         yield return new WaitForSeconds(1f);
-        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 10));
-        yield return CorrerMcAlAb();
+
+        ab.gameObject.SetActive(true);//activamos abuelo en posicion
+
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 1, 0));//texto fundido negro
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 0f, 0.3f));//deshacemos fundido a negro
+
+        yield return new WaitForSeconds(1f);//pausa drama
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 9));//texto mc
+        mc.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 10));//texto mc
+        StartCoroutine(CorrerMcAlAb());//corre al abuelo mientras texto mc
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 11));
-        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 1));
-
-
-
-
-
-
-
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 1));//texto abuelo
 
     }
     IEnumerator CorrerMcAlAb()
     {
-        mc.gameObject.GetComponent<SpriteRenderer>().flipX = true;
         float velocidad = 4f;
         Vector3 destino = new Vector3(
             ab.transform.position.x+0.3f,
