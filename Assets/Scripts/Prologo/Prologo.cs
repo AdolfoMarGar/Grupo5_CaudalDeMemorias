@@ -24,8 +24,14 @@ public class Prologo : MonoBehaviour
     [SerializeField] private InfiniteQuadScroll scroll2D;
     [SerializeField] private InfiniteQuadScroll scroll2D2;
     [SerializeField] private SpriteRenderer cuadradoNegro;
+    [SerializeField] private SpriteRenderer cuadradoBlanco;
+    [SerializeField] private SpriteRenderer cuadradoAmarillo;
     [SerializeField] private Canvas canvaFondoNegro;
+    [SerializeField] private Canvas canvaFondoBlanco;
     [SerializeField] private TextScreen textScreenFondoNegro;
+    [SerializeField] private TextScreen textScreenFondoBlanco;
+    [SerializeField] private Camera cam;
+
 
 
 
@@ -79,13 +85,143 @@ public class Prologo : MonoBehaviour
         StartCoroutine(CorrerMcAlAb());//corre al abuelo mientras texto mc
         yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 11));
         yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 1));//texto abuelo
+        yield return StartCoroutine(SepararMcAlAb());//
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 12));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 4));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 13));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 6));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 14));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 8));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 15));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 9));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 16));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 10));//texto abuelo
+        //mc tiembla
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 20));
+        //fundido a negro
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 1f, 1.5f));//fundido a negro
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 25));
+        //fundido a blanco
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoBlanco, 1f, 1.5f));//fundido a blanco
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoBlanco, textScreenFondoBlanco, -1, 30));
+        //Fundido a negro
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoBlanco, 0f, 0.5f));//fundido a blanco
 
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 34));
+        //flash amarillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 1f, 0.3f));//flash amarillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 0f, 0.3f));//flash amarillo
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 35));
+
+        //flash amarillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 1f, 0.3f));//fundido a amarillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 0f, 0.3f));//fundido a amarillo
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 36));
+        //Pantalla en  amarillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 1f, 1.5f));//fundido a amarillo
+
+        yield return StartCoroutine(TextoInteractable(mc, canvaFondoNegro, textScreenFondoNegro, -1, 37));
+        //Desfundio de amarillo 
+        CentrarCamaraEnX(cam, arbol.gameObject.transform);        //se centra en arbol
+
+
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoNegro, 0f, 0f));//fundido a negro
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 0f, 1.5f));//fundido a amarillo
+
+
+        //Luz tenue del arbol
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 39));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 11));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 40));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 12));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 41));
+        yield return StartCoroutine(TextoInteractable(ab, canvaAb, textScreenAb, 0, 14));//texto abuelo
+        yield return StartCoroutine(TextoInteractable(mc, canvaMc, textScreenMc, 0, 42));
+        // mc se acerca al arbol
+        mc.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        yield return CorrerMcAlArbol();
+        //flash into fundido a a marillo
+        yield return StartCoroutine(FundidoNegroSprite(cuadradoAmarillo, 1f, 1.5f));//fundido a negro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    IEnumerator CorrerMcAlArbol()
+    {
+        float velocidad = 4f;
+        Vector3 destino = new Vector3(
+            arbol.transform.position.x - 0.7f,
+            mc.transform.position.y,
+            mc.transform.position.z
+        );
+
+        while (Mathf.Abs(mc.transform.position.x - destino.x) > 0.01f)
+        {
+            mc.transform.position = Vector3.MoveTowards(
+                mc.transform.position,
+                destino,
+                velocidad * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        mc.transform.position = destino;
+
+    }
+    public static void CentrarCamaraEnX(Camera camara, Transform objetivo, float offsetX = 0f)
+    {
+        if (camara == null || objetivo == null) return;
+
+        Transform camTransform = camara.transform;
+        camTransform.position = new Vector3(
+            objetivo.position.x + offsetX,
+            camTransform.position.y,
+            camTransform.position.z
+        );
     }
     IEnumerator CorrerMcAlAb()
     {
         float velocidad = 4f;
         Vector3 destino = new Vector3(
             ab.transform.position.x+0.3f,
+            mc.transform.position.y,
+            mc.transform.position.z
+        );
+
+        while (Mathf.Abs(mc.transform.position.x - destino.x) > 0.01f)
+        {
+            mc.transform.position = Vector3.MoveTowards(
+                mc.transform.position,
+                destino,
+                velocidad * Time.deltaTime
+            );
+
+            yield return null;
+        }
+
+        mc.transform.position = destino;
+
+    }
+    IEnumerator SepararMcAlAb()
+    {
+        float velocidad = 10f;
+        Vector3 destino = new Vector3(
+            ab.transform.position.x + 1.2f,
             mc.transform.position.y,
             mc.transform.position.z
         );
