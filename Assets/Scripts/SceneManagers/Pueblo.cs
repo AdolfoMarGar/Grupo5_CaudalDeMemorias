@@ -5,7 +5,8 @@ using UnityEngine.SceneManagement;
 public class Pueblo : GameplayManager
 {    
     private bool interactuable = true;
-
+    public ReproductorSonido sonidoExit;
+    public ReproductorSonido sonidoNpc;
     protected override void Start()
     {
         Debug.Log("Iniciando Pueblo");
@@ -21,21 +22,23 @@ public class Pueblo : GameplayManager
 
         Debug.Log("Manejando interactuable: " + objetoClickeado.name);
         if(objetoClickeado is Npcs npc){
-            StartCoroutine(TextoInteractable(npc, canvas, textScreen, npc.GetId()-1, npc.GetTexts().Count - 1));
+            sonidoNpc.ReproducirUnaVez();
+            StartCoroutine(TextoNpc(npc));
         }
         
         if (objetoClickeado is Exits exit)
         {
+            sonidoExit.ReproducirUnaVez();
             Debug.Log("Objeto clickeado: " + exit.name + " es una salida y el jugador está colisionando con ella.");
             Debug.Log("Su id es: " + exit.GetId());
             // InteractionExit(int idExit, int idExitTo, int idCamara, int idCamaraTo)
             if (exit.GetId() == 1)
             {
-                InteractionExit(5, 1, 2);
+                InteractionExit(6, 1, 2);
             }
             else if (exit.GetId() == 2)
             {
-                InteractionExit(6 , 1, 2);
+                InteractionExit(5 , 1, 2);
             }
             else if (exit.GetId() == 3)
             {
@@ -47,11 +50,11 @@ public class Pueblo : GameplayManager
             }
             else if (exit.GetId() == 5)
             {
-                InteractionExit( 1, 2, 1);
+                InteractionExit( 2, 2, 1);
             }
             else if (exit.GetId() == 6)
             {
-                InteractionExit( 2, 2, 1);
+                InteractionExit( 1, 2, 1);
             }
             else if (exit.GetId() == 7)
             {
