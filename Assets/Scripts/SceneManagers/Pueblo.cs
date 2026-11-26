@@ -23,7 +23,7 @@ public class Pueblo : GameplayManager
         Debug.Log("Manejando interactuable: " + objetoClickeado.name);
         if(objetoClickeado is Npcs npc){
             sonidoNpc.ReproducirUnaVez();
-            StartCoroutine(TextoNpc(npc));
+            StartCoroutine(TextoInteractable(npc, canvas, textScreen, npc.GetId() - 1, npc.GetTexts().Count - 1));
         }
         
         if (objetoClickeado is Exits exit)
